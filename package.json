@@ -1,0 +1,39 @@
+{
+  "name": "a2mp",
+  "version": "1.0.0",
+  "description": "Angular 2 Mentoring Program",
+  "scripts": {
+    "start": "webpack-dev-server --inline --progress --port 8080",
+    "build": "rimraf dist && webpack --config config/webpack.prod.js --progress --profile --bail"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "dependencies": {
+    "load-google-maps-api": "0.0.2"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^2.2.4",
+    "codelyzer": "^1.0.0-beta.4",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "html-loader": "^0.4.3",
+    "html-webpack-plugin": "^2.15.0",
+    "i": "^0.3.5",
+    "node-sass": "^3.13.0",
+    "npm": "^4.0.2",
+    "null-loader": "^0.1.1",
+    "raw-loader": "^0.5.1",
+    "rimraf": "^2.5.2",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "typescript": "^2.0.3",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-merge": "^0.14.0"
+  }
+}
