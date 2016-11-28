@@ -1,9 +1,9 @@
-/// <reference path="../../typings/google.maps.d.ts"/>
 import './map.component.scss';
 
 import { Geoposition } from '../../interfaces/Geoposition';
 import WeatherService from '../../services/weather.service';
 import loadGoogleMapsAPI from '../../utils/loadGoogleMapsApi';
+import { GoogleMaps } from '../../interfaces/GoogleMaps';
 
 class MapsComponent {
 
@@ -13,7 +13,7 @@ class MapsComponent {
 			.catch(this.renderError.bind(this));
 	}
 	
-	getPositionAndRenderMap(googleMaps) {
+	getPositionAndRenderMap(googleMaps: GoogleMaps) {
 		this.weatherService.getCurrentPosition()
 			.then((position: Geoposition) => {
 				const latitude: number = position.coords.latitude;
@@ -23,7 +23,7 @@ class MapsComponent {
 			});
 	}
 
-	renderMap(googleMaps, latitude: number, longitude: number) {
+	renderMap(googleMaps: GoogleMaps, latitude: number, longitude: number) {
 		new googleMaps.Map(this.el, {
 			center: {lat: latitude, lng: longitude},
 			scrollwheel: false,

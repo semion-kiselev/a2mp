@@ -148,7 +148,7 @@
 	class WeatherService {
 	    constructor() {
 	        this.apiKey = '0585be187827a4d56040a8a992d654ab';
-	        this.urlTmp = 'https://pro.openweathermap.org/data/2.5/find?lat=${lat}&lon=${lon}&cnt=50&units=metric';
+	        this.urlTmp = 'http://api.openweathermap.org/data/2.5/find?lat=${lat}&lon=${lon}&cnt=50&units=metric';
 	        this.tenMinInMs = 10 * 60 * 1000;
 	        this.localDataKey = 'weatherForCountries';
 	        this.localSaveDateKey = 'weatherSaveDate';
@@ -375,7 +375,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	/// <reference path="../../typings/google.maps.d.ts"/>
 	__webpack_require__(32);
 	const loadGoogleMapsApi_1 = __webpack_require__(34);
 	class MapsComponent {
