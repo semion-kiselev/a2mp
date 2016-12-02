@@ -1,0 +1,93 @@
+.b-towns {
+	
+	.towns__list {
+		towns-item:first-child .towns__list-item {
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+		}
+
+		towns-item:last-child .towns__list-item {
+			border-bottom-left-radius: 4px;
+			border-bottom-right-radius: 4px;
+    		border-bottom-width: 1px;
+		}
+	}
+
+	.towns__list-item {
+		padding: 0 16px;
+		border: 1px solid #ccc;
+		border-bottom-width: 0;
+
+		&:hover {
+			background: #eceeef;
+
+			.towns__list-item-temp {
+				position: relative;
+				box-shadow: 0 0 0 1px #faf2cc;
+			}
+		}
+	}
+
+	.towns__list-item-name {
+		max-width: 300px;
+		padding-top: 12px;
+		font-size: 20px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.towns__list-item-icon {
+
+	}
+
+	.towns__list-item-temp {
+		margin: 10px 20px 0;
+		padding: 4px 12px;
+		border-radius: 4px;
+		background: #fcf8e3;
+		font-weight: bold;
+		color: #666;
+	}
+
+	.towns__list-item-sup {
+		font-size: 10px;
+	}
+
+	.towns__list-item-description {
+		padding-top: 14px;
+		font-style: italic;
+	}
+
+	.towns__paginator {
+		margin-bottom: 20px;
+	}
+
+	.towns__loader {
+		margin: 80px 0 50px;
+	}
+
+	.towns__error {
+		margin: 30px 0;
+	}
+
+	@media all and (max-width: 650px) {
+		.towns__list-item-name-wrapper,
+		.towns__list-item-info-wrapper {
+			float: none !important;
+		}
+
+		.towns__list-item-info-wrapper {
+			text-align: center;
+
+			& > .row {
+				display: inline-block;
+			}
+		}
+
+		.towns__list-item-name {
+			margin: 0 auto;
+			text-align: center;
+		}
+	}
+}
