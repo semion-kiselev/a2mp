@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "nolib": true,
     "removeComments": false,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true
-  },
-  "files": [
-    "typings/index.d.ts"
-  ]
+  }
 }

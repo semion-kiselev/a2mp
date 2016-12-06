@@ -11,35 +11,29 @@ module.exports = {
   },
 
   entry: {
-    'app': 'ts/index.ts'
+    'app': 'main.ts'
   },
 
   module: {
     loaders: [
       {
         test: /\.ts$/,
-        include: root('src', 'ts'),
-        loaders: ['awesome-typescript-loader']
+        include: root('src'),
+        loaders: ['awesome-typescript-loader', 'angular2-template-loader']
       },
       {
         test: /\.html$/,
-        include: root('src', 'ts', 'components'),
+        include: root('src'),
         loader: 'html'
       },
       {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-        include: [
-          root('src', 'images'), 
-          root('src', 'fonts')
-        ],
+        include: root('src'),
         loader: 'url?{limit: 20000, name: "assets/[name].[hash].[ext]"}'
       },
       {
         test: /\.scss$/,
-        include: [
-          root('src', 'sass'),
-          root('src', 'ts', 'components')
-        ],
+        include: root('src'),
         loader: ExtractTextPlugin.extract('style', 'css!sass')
       }
     ]
