@@ -39,14 +39,14 @@ export class OpenWeatherService {
 	}
 
 	private formatFetchedData(data: OpenWeatherResponse): WeatherItem[] {
-		return data.list.map((item: OpenWeatherResponseItem): WeatherItem => {
-			return {
+		return data.list.map((item: OpenWeatherResponseItem): WeatherItem => (
+			{
 				name: item.name,
 				temp: Math.round(item.main.temp),
 				description: item.weather[0].description,
 				icon: 'wi' + item.weather[0].icon
-			};		
-		});
+			}
+		));
 	}
 
 	private saveFormatedDataToLocalStorage(data: WeatherItem[]): WeatherItem[] {

@@ -28,7 +28,7 @@ export class MapComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.googleMapsApi.load({})
+		this.googleMapsApi.load()
 			.then(this.getPositionAndRenderMap.bind(this))
 			.catch(() => this.hasError = true);
 	}

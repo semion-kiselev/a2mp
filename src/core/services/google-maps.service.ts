@@ -9,7 +9,7 @@ export class GoogleMapsService {
 	private url: string = 'https://maps.googleapis.com/maps/api/js?';
 	private callbackName: string = '__googleMapsApiOnLoadCallback';
 
-	public load(options: LoadGoogleMapsApiOptions): Promise<GoogleMaps> {
+	public load(options: LoadGoogleMapsApiOptions = {}): Promise<GoogleMaps> {
 		return new Promise((resolve, reject) => {
 			const serializedOptions: string = this.serialiseOptions(options);
 			this.createScriptTag(this.url, serializedOptions);
