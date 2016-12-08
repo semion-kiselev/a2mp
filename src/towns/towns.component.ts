@@ -1,4 +1,4 @@
-import './towns.component.scss';
+ import './towns.component.scss';
 import { Component, OnInit } from '@angular/core';
 
 import { OpenWeatherService } from '../core/services/open-weather.service';
@@ -35,7 +35,7 @@ import { WeatherItem } from '../shared/interfaces/WeatherItem';
 				<div class="towns__list-wrapper">
 					<ul class="towns__list">
 						<towns-item
-							*ngFor="let item of dataToDisplay"
+							*ngFor="let item of getWeatherForCountries | async | slice:from:to"
 							[name]="item.name"
 							[icon]="item.icon"
 							[temp]="item.temp"
@@ -48,7 +48,7 @@ import { WeatherItem } from '../shared/interfaces/WeatherItem';
 	`
 })
 export class TownsComponent implements OnInit {
-	private isLoading: boolean = true;
+	private isLoading: boolean = false;
 	private hasError: boolean = false;
 
 	private data: WeatherItem[] = [];
@@ -56,29 +56,41 @@ export class TownsComponent implements OnInit {
 	private rowsPerPage: number = 10;
 	private currentPageIndex: number = 0;
 
+	private getWeatherForCountries: Promise<WeatherItem[]>;
+
 	constructor(private openWeatherService: OpenWeatherService) {}
 
 	get pageQty(): number {
 		return Math.ceil(this.data.length / this.rowsPerPage);
 	}
 
-	get dataToDisplay(): WeatherItem[] {
-		const from = this.rowsPerPage * this.currentPageIndex;
-		const to = from + this.rowsPerPage;
+	get from() {
+		return this.rowsPerPage * this.currentPageIndex;
+	}
 
-		return this.data.slice(from, to);
-	}	
+	get to() {
+		return this.from + this.rowsPerPage;
+	}
+
+	// get dataToDisplay(): WeatherItem[] {
+	// 	const from = this.rowsPerPage * this.currentPageIndex;
+	// 	const to = from + this.rowsPerPage;
+
+	// 	return this.data.slice(from, to);
+	// }	
 
 	ngOnInit(): void {
-		this.openWeatherService.getWeatherForCountries()
-			.then((data: WeatherItem[]) => {
-				this.isLoading = false;
-				this.data = data;
-			})
-			.catch(() => {
-				this.isLoading = false;
-				this.hasError = true;
-			});
+		this.getWeatherForCountries = this.openWeatherService.getWeatherForCountries();
+
+		// this.openWeatherService.getWeatherForCountries()
+		// 	.then((data: WeatherItem[]) => {
+		// 		this.isLoading = false;
+		// 		this.data = data;
+		// 	})
+		// 	.catch(() => {
+		// 		this.isLoading = false;
+		// 		this.hasError = true;
+		// 	});
 	}
 
 	onPageChange(pageIndex: number): void {

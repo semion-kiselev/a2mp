@@ -9,7 +9,7 @@ import getJson from '../../shared/utils/getJson';
 Injectable()
 export class OpenWeatherService {
 	private apiKey: string = '0585be187827a4d56040a8a992d654ab';
-	private urlTmp: string = 'http://api.openweathermap.org/data/2.5/find?lat=${lat}&lon=${lon}&cnt=50&units=metric';
+	private urlTmp: string = 'http://api.openweathermap.org/data/2.5/find?lat=${lat}&lon=${lon}&cnt=50';
 	private freshTimeInMs: number = 10*60*1000;
 	private localDataKey: string = 'weatherForCountries';
 	private localSaveDateKey: string = 'weatherSaveDate';
@@ -19,6 +19,7 @@ export class OpenWeatherService {
 	public getWeatherForCountries(): Promise<WeatherItem[]> {
 		const localWeatherForCountries: string = localStorage.getItem(this.localDataKey);
 
+// && this.localDataIsFresh()
 		if ( localWeatherForCountries && this.localDataIsFresh() ) {
 			return Promise.resolve(JSON.parse(localWeatherForCountries));
 		}

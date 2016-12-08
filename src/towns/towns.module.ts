@@ -5,7 +5,13 @@ import { TownsItemComponent } from './towns-item.component';
 
 @NgModule({
 	imports: [ SharedModule ],
-	declarations: [ TownsComponent, TownsItemComponent ],
-	exports: [ TownsComponent, TownsItemComponent ]
+	declarations: [ 
+		TownsComponent, 
+		TownsItemComponent
+	],
+	exports: [ 
+		TownsComponent, 
+		TownsItemComponent
+	]
 })
 export class TownsModule {};

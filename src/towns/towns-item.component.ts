@@ -14,7 +14,7 @@ import { Component, Input } from '@angular/core';
 							<i class="weather-icon {{ icon }}"></i>
 						</div>
 						<div class="towns__list-item-temp col">
-							{{ temp }}<sup class="towns__list-item-sup">°C</sup>
+							{{ temp | kelvinToCelcius }}<sup class="towns__list-item-sup">°C</sup>
 						</div>
 						<div class="towns__list-item-description col">{{ description }}</div>
 					</div>

@@ -7,6 +7,9 @@ import { Component } from '@angular/core';
 	    <div class="root__towns">
     		<towns></towns>
 	    </div>
+	    <div class="root__town-weather">
+			<town-weather></town-weather>
+	    </div>
 	    <div class="root__map">
 	    	<map></map>
 	    </div>
