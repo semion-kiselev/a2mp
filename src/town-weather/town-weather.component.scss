@@ -1,0 +1,50 @@
+.b-town-weather {
+
+	.town-weather__title {
+		margin-bottom: 10px;
+		font-size: 26px;
+		text-align: center;
+	}
+
+	.town-weather__input-wrapper {
+		margin-bottom: 15px;
+	}	
+
+	.town-weather__input {
+		display: block;
+	    width: 100%;
+	    padding: 8px 12px;
+	    line-height: 1.25;
+	    color: #55595c;
+	    background-color: #fff;
+	    background-image: none;
+	    -webkit-background-clip: padding-box;
+	    background-clip: padding-box;
+	    border: 1px solid rgba(0,0,0,.15);
+	    border-radius: 4px;
+	    font-size: 16px;
+	}
+
+	.town-weather__button {
+    	display: inline-block;
+	    font-weight: 400;
+	    line-height: 1.25;
+	    text-align: center;
+	    white-space: nowrap;
+	    vertical-align: middle;
+	    cursor: pointer;
+	    -webkit-user-select: none;
+	    user-select: none;
+	    border: 1px solid #adadad;
+	    padding: 9px 16px 8px;
+	    border-radius: 5px;
+	    font-size: 16px;
+        color: #373a3c;
+    	background-color: #e6e6e6;
+	}
+
+	.town-weather__output {
+		margin-top: 10px;
+		text-align: center;
+	}
+}

@@ -48,7 +48,7 @@ import { WeatherItem } from '../shared/interfaces/WeatherItem';
 	`
 })
 export class TownsComponent implements OnInit {
-	private isLoading: boolean = false;
+	private isLoading: boolean = true;
 	private hasError: boolean = false;
 
 	private data: WeatherItem[] = [];
@@ -70,27 +70,20 @@ export class TownsComponent implements OnInit {
 
 	get to() {
 		return this.from + this.rowsPerPage;
-	}
-
-	// get dataToDisplay(): WeatherItem[] {
-	// 	const from = this.rowsPerPage * this.currentPageIndex;
-	// 	const to = from + this.rowsPerPage;
-
-	// 	return this.data.slice(from, to);
-	// }	
+	}	
 
 	ngOnInit(): void {
 		this.getWeatherForCountries = this.openWeatherService.getWeatherForCountries();
 
-		// this.openWeatherService.getWeatherForCountries()
-		// 	.then((data: WeatherItem[]) => {
-		// 		this.isLoading = false;
-		// 		this.data = data;
-		// 	})
-		// 	.catch(() => {
-		// 		this.isLoading = false;
-		// 		this.hasError = true;
-		// 	});
+		this.openWeatherService.getWeatherForCountries()
+			.then((data: WeatherItem[]) => {
+				this.isLoading = false;
+				this.data = data;
+			})
+			.catch(() => {
+				this.isLoading = false;
+				this.hasError = true;
+			});
 	}
 
 	onPageChange(pageIndex: number): void {

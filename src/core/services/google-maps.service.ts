@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 
+import { googleMapsApiKey } from '../../app.config';
 import { GoogleMaps } from '../../shared/interfaces/GoogleMaps';
 import LoadGoogleMapsApiOptions from '../../shared/interfaces/LoadGoogleMapsApiOptions';
 
 Injectable()
 export class GoogleMapsService {
-	private apiKey: string = 'AIzaSyDUXoXKPqU4Dx1GulPcmbVwfOXYDK7UsBQ';
+	private apiKey: string = googleMapsApiKey;
 	private url: string = 'https://maps.googleapis.com/maps/api/js?';
 	private callbackName: string = '__googleMapsApiOnLoadCallback';
 

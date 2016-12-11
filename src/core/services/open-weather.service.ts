@@ -5,10 +5,11 @@ import { WeatherItem } from '../../shared/interfaces/WeatherItem';
 import { OpenWeatherResponseItem, OpenWeatherResponse } from '../../shared/interfaces/OpenWeatherResponse';
 import { Geoposition } from '../../shared/interfaces/Geoposition';
 import getJson from '../../shared/utils/getJson';
+import { openWeatherApiKey } from '../../app.config';
 
 Injectable()
 export class OpenWeatherService {
-	private apiKey: string = '0585be187827a4d56040a8a992d654ab';
+	private apiKey: string = openWeatherApiKey;
 	private urlTmp: string = 'http://api.openweathermap.org/data/2.5/find?lat=${lat}&lon=${lon}&cnt=50';
 	private freshTimeInMs: number = 10*60*1000;
 	private localDataKey: string = 'weatherForCountries';
