@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Http } from '@angular/http';
-import 'rxjs/Rx';
 
 import { openWeatherApiKey } from '../app.config';
+import { LoaderService } from '../core/services/loader.service';
 
 interface TownWeatherCacheData {
 	weather: string,
@@ -23,13 +23,14 @@ export class TownWeatherPipe implements PipeTransform {
 	private defaultErrorMsg: string = 'Whoops, something goes wrong. Please try again later';
 	private cacheData = {}; 
 
-	constructor(private http: Http) {}
+	constructor(private http: Http, private loaderService: LoaderService) {}
 
 	transform(townName: string): string {
 		if ( (!this.cacheData[townName] || !this.cachedDataIsFresh(this.cacheData[townName])) &&
 			  !this.isLoading	
 		 ) {
-			this.isLoading = true;
+		 	this.isLoading = true;
+			this.loaderService.toggle(true);
 			this.cacheData[townName] = {};
 
 			let url: string = this.urlTmp.replace(/\$\{townName\}/, townName);
@@ -41,14 +42,13 @@ export class TownWeatherPipe implements PipeTransform {
 					this.cacheData[townName].weather = result;
 					this.cacheData[townName].timestamp = Date.now();
 					this.isLoading = false;
+					this.loaderService.toggle(false);
 				}, error => {
 					this.hasError = true;
 					this.errorMsg = error;
 				});
 
 		}
-
-		// if (this.isLoading) return 'Please wait, the weather is loading...';
 
 		if (this.hasError) {
 			return (this.errorMsg) ? this.errorMsg : this.defaultErrorMsg;

@@ -11,6 +11,7 @@ import { MainComponent } from './components/app-main.component';
 import { GeoPositionService } from './services/geo-position.service';
 import { GoogleMapsService } from './services/google-maps.service';
 import { OpenWeatherService } from './services/open-weather.service';
+import { LoaderService } from './services/loader.service';
 
 @NgModule({
 	imports: [ 
@@ -32,7 +33,8 @@ import { OpenWeatherService } from './services/open-weather.service';
 	providers: [
 		GeoPositionService,
 		GoogleMapsService,
-		OpenWeatherService
+		OpenWeatherService,
+		LoaderService
 	]
 })
 export class CoreModule {};

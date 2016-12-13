@@ -4,6 +4,22 @@
 	height:78px;
 	margin:auto;
 
+	&.__small {
+		width: 30px;
+		height: 30px;
+
+		.spinner__wBall {
+			width: 26px;
+			height: 26px;
+		}
+
+		.spinner__wInnerBall {
+			width: 4px;
+			height: 4px;
+			border-radius: 4px;	
+		}		
+	}
+
 	.spinner__wBall {
 		position: absolute;
 		width: 74px;

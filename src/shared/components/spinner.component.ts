@@ -1,10 +1,10 @@
 import './spinner.component.scss';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
 	selector: 'spinner',
 	template: `
-		<div class="b-spinner">
+		<div [ngClass]="{'b-spinner': true, '__small': type === 'small'}">
 			<div class="spinner__wBall __wBall_1">
 				<div class="spinner__wInnerBall"></div>
 			</div>
@@ -23,4 +23,6 @@ import { Component } from '@angular/core';
 		</div>
 	`
 })
-export class SpinnerComponent {};
+export class SpinnerComponent {
+	@Input() private type: string;
+};
