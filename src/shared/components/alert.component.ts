@@ -1,10 +1,11 @@
 import './alert.component.scss';
-import { Component, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 
 @Component({
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	selector: 'alert',
 	template: `
-		<div [ngClass]="{'b-alert': true, '--danger': type === 'danger'}">
+		<div [ngClass]="{'b-alert': true, '--danger': type === 'danger', '--info': type === 'info'}">
 			{{ message }}
 		</div>
 	`

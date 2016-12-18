@@ -1,16 +1,15 @@
-.b-town-weather {
-
-	.town-weather__title {
+.b-add-town {
+	.add-town__title {
 		margin-bottom: 10px;
-		font-size: 26px;
+		font-size: 20px;
 		text-align: center;
 	}
 
-	.town-weather__input-wrapper {
+	.add-town__input-wrapper {
 		margin-bottom: 15px;
 	}	
 
-	.town-weather__input {
+	.add-town__input {
 		display: block;
 	    width: 100%;
 	    padding: 8px 12px;
@@ -25,7 +24,7 @@
 	    font-size: 16px;
 	}
 
-	.town-weather__button {
+	.add-town__button {
     	display: inline-block;
 	    font-weight: 400;
 	    line-height: 1.25;
@@ -43,13 +42,19 @@
     	background-color: #e6e6e6;
 	}
 
-	.town-weather__output {
+	.add-town__output {
 		margin-top: 10px;
 		text-align: center;
 	}
 
-	.town-weather__spinner {
+	.add-town__spinner {
 		margin-top: 6px;
 		margin-left: 15px;
+	}
+
+	.add-town__error {
+		margin-top: 10px;
+		margin-left: 15px;
+	    color: #a94442;
 	}
 }

@@ -1,5 +1,5 @@
 import './map.component.scss';
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 
 import { Geoposition } from '../shared/interfaces/Geoposition';
 import { GoogleMaps } from '../shared/interfaces/GoogleMaps';
@@ -8,6 +8,7 @@ import { GeoPositionService } from '../core/services/geo-position.service';
 import { GoogleMapsService } from '../core/services/google-maps.service';
 
 @Component({
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	selector: 'map',
 	template: `
 		<div class="b-map" [ngStyle]="{'height': hasError ? 'auto' : height + 'px'}">

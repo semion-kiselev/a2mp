@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapModule } from '../map/map.module';
 import { TownsModule } from '../towns/towns.module';
-import { TownWeatherModule } from '../town-weather/town-weather.module';
 
 import { HeaderComponent } from './components/app-header.component';
 import { FooterComponent } from './components/app-footer.component';
@@ -17,8 +16,7 @@ import { LoaderService } from './services/loader.service';
 	imports: [ 
 		CommonModule, 
 		MapModule,
-		TownsModule,
-		TownWeatherModule 
+		TownsModule 
 	],
 	declarations: [
 		HeaderComponent,

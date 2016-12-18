@@ -1,64 +1,84 @@
- import './towns.component.scss';
+import './towns.component.scss';
 import { Component, OnInit } from '@angular/core';
 
+import { TownWeather } from '../shared/interfaces/TownWeather';
 import { OpenWeatherService } from '../core/services/open-weather.service';
-import { WeatherItem } from '../shared/interfaces/WeatherItem';
 
 @Component({
 	selector: 'towns',
 	template: `
 		<div class="b-towns">
-			<div *ngIf="isLoading" class="towns__loading">
+			<div *ngIf="isLoadingTownsWeather" class="towns__loading">
 				<spinner></spinner>
 			</div>
 
-			<div *ngIf="hasError" class="towns__error">
+			<div *ngIf="getTownsWeatherError" class="towns__error">
 				<alert 
 					type="danger" 
-					message="Whoops, something goes wrong... Please, try again in 10 minutes."
+					[message]="getTownsWeatherError"
 				></alert>
 			</div>
 
-			<div *ngIf="!hasError && !isLoading">
-				<div class="row">
-					<div class="col pull-right">
-						<div class="towns__paginator">
-							<paginator *ngIf="pageQty > 1" 
-								[pageQty]="pageQty" 
-								(onPageChange)="onPageChange($event)"
-							>
-							</paginator>
-						</div>
-					</div>
+			<div *ngIf="!getTownsWeatherError && !isLoadingTownsWeather" class="towns__paginator row">
+				<div class="col pull-right">
+					<paginator *ngIf="pageQty > 1" 
+						[pageQty]="pageQty" 
+						[currentPageIndex]="currentPageIndex" 
+						(onPageChange)="onPageChange($event)"
+					>
+					</paginator>
 				</div>
+			</div>
 
-				<div class="towns__list-wrapper">
-					<ul class="towns__list">
-						<towns-item
-							*ngFor="let item of getWeatherForCountries | async | slice:from:to"
-							[name]="item.name"
-							[icon]="item.icon"
-							[temp]="item.temp"
-							[description]="item.description"
-						></towns-item>
-					</ul>
-				</div>
+			<div *ngIf="!getTownsWeatherError && !isLoadingTownsWeather && data.length === 0" class="towns__empty-list">
+				<alert 
+					type="info" 
+					message="There is no towns, which weather to observe. 
+								Please, add at least one, but no more then twenty"
+				></alert>
+			</div>			
+
+			<div *ngIf="!getTownsWeatherError && !isLoadingTownsWeather && data.length > 0" class="towns__list">
+				<towns-list 
+					[data]="data | slice:from:to"
+					(onToggleFavorite)="onToggleFavorite($event)"
+					(onDeleteTown)="onDeleteTown($event)"
+				></towns-list>
+			</div>
+
+			<div *ngIf="townsOverloadError" class="towns__error">
+				<alert 
+					type="danger" 
+					message="You were told - no more then twenty, remember?"
+				></alert>
+			</div>
+
+			<div class="towns__add">
+				<add-town 
+					[getTownWeatherError]="getTownWeatherError"
+					[duplicateTownWeatherError]="duplicateTownWeatherError"
+					[isLoadingTownWeather]="isLoadingTownWeather"
+					(onAddTown)="onAddTown($event)"
+				></add-town>
 			</div>
 		</div>
 	`
 })
 export class TownsComponent implements OnInit {
-	private isLoading: boolean = true;
-	private hasError: boolean = false;
-
-	private data: WeatherItem[] = [];
+	private data: TownWeather[] = [];
 
 	private rowsPerPage: number = 10;
 	private currentPageIndex: number = 0;
 
-	private getWeatherForCountries: Promise<WeatherItem[]>;
+	private getTownsWeatherError: string = '';
+	private getTownWeatherError: string = '';
+	private duplicateTownWeatherError: string= '';
+	private townsOverloadError: boolean = false;
+	private isLoadingTownsWeather: boolean = false;
+	private isLoadingTownWeather: boolean = false;
+	
 
-	constructor(private openWeatherService: OpenWeatherService) {}
+	constructor(private OWS: OpenWeatherService) {}
 
 	get pageQty(): number {
 		return Math.ceil(this.data.length / this.rowsPerPage);
@@ -73,20 +93,49 @@ export class TownsComponent implements OnInit {
 	}	
 
 	ngOnInit(): void {
-		this.getWeatherForCountries = this.openWeatherService.getWeatherForCountries();
+		this.OWS.data.subscribe((data) => {
+			if (this.data.length % this.rowsPerPage === 0 && 
+				data.length % this.rowsPerPage === 1 && 
+				this.data.length !== 0) {
 
-		this.openWeatherService.getWeatherForCountries()
-			.then((data: WeatherItem[]) => {
-				this.isLoading = false;
-				this.data = data;
-			})
-			.catch(() => {
-				this.isLoading = false;
-				this.hasError = true;
-			});
+				this.currentPageIndex += 1;
+			} else if (this.data.length % this.rowsPerPage === 1 && 
+				data.length % this.rowsPerPage === 0 && 
+				this.rowsPerPage !== 0) {
+
+				this.currentPageIndex -= 1;
+			}
+
+			this.data = data;	
+		});
+		this.OWS.getTownsWeatherError.subscribe((value) => this.getTownsWeatherError = value);
+		this.OWS.getTownWeatherError.subscribe((value) => this.getTownWeatherError = value);
+		this.OWS.duplicateTownWeatherError.subscribe((value) => this.duplicateTownWeatherError = value);
+		this.OWS.isLoadingTownsWeather.subscribe((value) => this.isLoadingTownsWeather = value);
+		this.OWS.isLoadingTownWeather.subscribe((value) => this.isLoadingTownWeather = value);
+
+		this.OWS.getTownsWeather();
+		this.OWS.startTownsWeatherPeriodicUpdate();
 	}
 
 	onPageChange(pageIndex: number): void {
 		this.currentPageIndex = pageIndex;
+	}
+
+	onAddTown(townName: string): void {
+		if (this.data.length < 20) {
+			this.OWS.addTown(townName);
+		} else {
+			this.townsOverloadError = true;
+			setTimeout(() => this.townsOverloadError = false, 2000);
+		}
+	}
+
+	onDeleteTown(townId: number): void {
+		this.OWS.deleteTown(townId);
+	}
+
+	onToggleFavorite(townId: number): void {
+		this.OWS.toggleFavorite(townId);
 	}
 }

@@ -1,7 +1,8 @@
 import './spinner.component.scss';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	selector: 'spinner',
 	template: `
 		<div [ngClass]="{'b-spinner': true, '__small': type === 'small'}">

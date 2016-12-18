@@ -1,20 +1,21 @@
 import './paginator.component.scss';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	selector: 'paginator',
 	template: `
 		<div class="b-paginator">
 			<div *ngFor="let index of pageIndexesAr"
-				[ngClass]="{'paginator__item': true, '--selected': selected === index}"
+				[ngClass]="{'paginator__item': true, '--selected': currentPageIndex === index}"
 				(click)="onClickPageNumber(index)"
 			>{{ index + 1 }}</div>
 		</div>
 	`
 })
 export class PaginatorComponent {
-	private selected: number = 0;
 	@Input() private pageQty: number;
+	@Input() private currentPageIndex: number;
 	@Output() private onPageChange = new EventEmitter<number>();
 
 	get pageIndexesAr(): number[] {
@@ -24,7 +25,6 @@ export class PaginatorComponent {
 	}
 
 	onClickPageNumber(pageIndex: number) {
-		this.selected = pageIndex;
 		this.onPageChange.emit(pageIndex);
 	}
 }

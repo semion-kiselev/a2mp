@@ -1,0 +1,98 @@
+.b-towns-item {
+	position: relative;
+	padding: 0 40px;
+	border: 1px solid #ccc;
+	border-bottom-width: 0;
+
+	&:hover {
+		background: #eceeef;
+
+		.towns-item__temp {
+			position: relative;
+			box-shadow: 0 0 0 1px #faf2cc;
+		}
+	}
+
+	.towns-item__name {
+		max-width: 300px;
+		padding-top: 12px;
+		font-size: 20px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.towns-item__icon {}
+
+	.towns-item__temp {
+		margin: 10px 20px 0;
+		padding: 4px 12px;
+		border-radius: 4px;
+		background: #fcf8e3;
+		font-weight: bold;
+		color: #666;
+	}
+
+	.towns-item__sup {
+		font-size: 10px;
+	}
+
+	.towns-item__description {
+		padding-top: 14px;
+		font-style: italic;
+	}
+
+	.towns-item__delete-icon {
+		position: absolute;
+		top: 16px;
+		right: 12px;
+		width: 16px;
+		height: 16px;
+		background: url('../shared/images/cancel-circle.svg') 0 0 no-repeat;
+		background-size: 16px 16px;
+		cursor: pointer;
+
+		&:hover {
+			background-image: url('../shared/images/cancel-circle-hovered.svg');
+		}
+	}
+
+	.towns-item__favorite-icon {
+		position: absolute;
+		top: 15px;
+		left: 13px;
+		width: 16px;
+		height: 16px;
+		background: url('../shared/images/star-empty.svg') 0 0 no-repeat;
+		background-size: 16px 16px;
+		cursor: pointer;
+
+		&:hover {
+			background-image: url('../shared/images/star-empty-hovered.svg');
+		}
+
+		&.--active {
+			background-image: url('../shared/images/star-full.svg');	
+		}
+	}
+
+	@media all and (max-width: 650px) {
+		.towns-item__name-wrapper,
+		.towns-item__info-wrapper {
+			float: none !important;
+		}
+
+		.towns-item__info-wrapper {
+			text-align: center;
+
+			& > .row {
+				display: inline-block;
+			}
+		}
+
+		.towns-item__name {
+			margin: 0 auto;
+			text-align: center;
+		}
+	}
+}
