@@ -18,8 +18,8 @@ import { TownWeather } from '../shared/interfaces/TownWeather';
 })
 export class TownsListComponent {
 	@Input() private data: TownWeather[];
-	@Output() private onToggleFavorite = new EventEmitter<number>();
-	@Output() private onDeleteTown = new EventEmitter<number>();
+	@Output() private onToggleFavorite: EventEmitter<number> = new EventEmitter<number>();
+	@Output() private onDeleteTown: EventEmitter<number> = new EventEmitter<number>();
 
 	onToggleFavoriteFromItem(townId: number) {
 		this.onToggleFavorite.emit(townId);

@@ -32,7 +32,7 @@ export class AddTownComponent {
 	@Input() private getTownWeatherError: string;
 	@Input() private duplicateTownWeatherError: string;
 	@Input() private isLoadingTownWeather: boolean;
-	@Output() private onAddTown = new EventEmitter<string>();
+	@Output() private onAddTown: EventEmitter<string> = new EventEmitter<string>();
 
 	onSubmitTown(townName: string): void {
 		this.onAddTown.emit(townName);
