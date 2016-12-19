@@ -9,12 +9,7 @@ import { TownWeather } from '../shared/interfaces/TownWeather';
 		<ul class="b-towns-list">
 			<towns-item
 				*ngFor="let item of data"
-				[id]="item.id"
-				[name]="item.name"
-				[icon]="item.icon"
-				[temp]="item.temp"
-				[description]="item.description"
-				[favorite]="item.favorite"
+				[item]="item"
 				(onToggleFavorite)="onToggleFavoriteFromItem($event)"
 				(onDeleteTown)="onDeleteTownFromItem($event)"
 			></towns-item>

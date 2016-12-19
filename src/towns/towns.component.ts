@@ -93,7 +93,7 @@ export class TownsComponent implements OnInit {
 	}	
 
 	ngOnInit(): void {
-		this.OWS.data.subscribe((data) => {
+		this.OWS.data.subscribe((data: TownWeather[]) => {
 			if (this.data.length % this.rowsPerPage === 0 && 
 				data.length % this.rowsPerPage === 1 && 
 				this.data.length !== 0) {
@@ -108,11 +108,11 @@ export class TownsComponent implements OnInit {
 
 			this.data = data;	
 		});
-		this.OWS.getTownsWeatherError.subscribe((value) => this.getTownsWeatherError = value);
-		this.OWS.getTownWeatherError.subscribe((value) => this.getTownWeatherError = value);
-		this.OWS.duplicateTownWeatherError.subscribe((value) => this.duplicateTownWeatherError = value);
-		this.OWS.isLoadingTownsWeather.subscribe((value) => this.isLoadingTownsWeather = value);
-		this.OWS.isLoadingTownWeather.subscribe((value) => this.isLoadingTownWeather = value);
+		this.OWS.getTownsWeatherError.subscribe((value: string) => this.getTownsWeatherError = value);
+		this.OWS.getTownWeatherError.subscribe((value: string) => this.getTownWeatherError = value);
+		this.OWS.duplicateTownWeatherError.subscribe((value: string) => this.duplicateTownWeatherError = value);
+		this.OWS.isLoadingTownsWeather.subscribe((value: boolean) => this.isLoadingTownsWeather = value);
+		this.OWS.isLoadingTownWeather.subscribe((value: boolean) => this.isLoadingTownWeather = value);
 
 		this.OWS.getTownsWeather();
 		this.OWS.startTownsWeatherPeriodicUpdate();
