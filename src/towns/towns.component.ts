@@ -115,7 +115,7 @@ export class TownsComponent implements OnInit {
 		this.OWS.isLoadingTownWeather.subscribe((value: boolean) => this.isLoadingTownWeather = value);
 
 		this.OWS.getTownsWeather();
-		// this.OWS.startTownsWeatherPeriodicUpdate();
+		this.OWS.startTownsWeatherPeriodicUpdate();
 	}
 
 	onPageChange(pageIndex: number): void {
