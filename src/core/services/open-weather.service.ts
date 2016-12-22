@@ -161,16 +161,27 @@ export class OpenWeatherService {
 
 		let townsWeather: TownWeather[] = this.data.getValue();
 		
-		townsWeather.forEach(item => {
-			if (item.id === townId) {
-				item.favorite = !item.favorite;
-			} else {
-				item.favorite = false;
+		const newtownsWeather = townsWeather.map(item => {
+			let newItem: TownWeather = {
+				id: null, name: null, description: null, icon: null, temp: null, favorite: null, windSpeed: null,
+				windDeg: null
+			};
+
+			for (let key in item ) {
+				newItem[key] = item[key];
 			}
+
+			if (newItem.id === townId) {
+				newItem.favorite = !newItem.favorite;
+			} else {
+				newItem.favorite = false;
+			}
+
+			return newItem;
 		});
 
-		this.data.next(townsWeather);
-		this.saveTownsToStorage(townsWeather);
+		this.data.next(newtownsWeather);
+		this.saveTownsToStorage(newtownsWeather);
 	}
 
 	private getUrlForTownsWeather(townsIds: string): string {
@@ -192,7 +203,9 @@ export class OpenWeatherService {
 			description: data.weather[0].description,
 			icon: 'wi' + data.weather[0].icon,
 			temp: Math.round(data.main.temp),
-			favorite: false
+			favorite: false,
+			windSpeed: Math.round(data.wind.speed),
+			windDeg: data.wind.deg
 		};
 	}
 

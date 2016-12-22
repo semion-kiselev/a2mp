@@ -8,13 +8,16 @@ import { PaginatorComponent } from './components/paginator.component';
 
 import { KelvinToCelciusPipe } from './pipes/kelvin-to-celsius.pipe';
 
+import { WaitDirective } from './directives/wait.directive';
+
 @NgModule({
 	imports: [CommonModule, HttpModule],
 	declarations: [
 		SpinnerComponent,
 		AlertComponent,
 		PaginatorComponent,
-		KelvinToCelciusPipe
+		KelvinToCelciusPipe,
+		WaitDirective
 	],
 	exports: [
 		CommonModule,
@@ -22,7 +25,8 @@ import { KelvinToCelciusPipe } from './pipes/kelvin-to-celsius.pipe';
 		SpinnerComponent,
 		AlertComponent,
 		PaginatorComponent,
-		KelvinToCelciusPipe
+		KelvinToCelciusPipe,
+		WaitDirective
 	]
 })
 export class SharedModule {}

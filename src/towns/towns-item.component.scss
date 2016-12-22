@@ -42,6 +42,28 @@
 		font-style: italic;
 	}
 
+	.towns-item__wind {
+		padding-top: 14px;
+	}
+
+	.towns-item__wind-deg {
+		position: relative;
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		margin-left: 5px;
+	}	
+
+	.towns-item__wind-deg-arrow {
+		position: absolute;
+		top: 2px;
+		display: block;
+		width: 16px;
+		height: 16px;
+		background: url('../shared/images/arrow-up2.svg') 0 0 no-repeat;
+		background-size: 16px 16px; 
+	}
+
 	.towns-item__delete-icon {
 		position: absolute;
 		top: 16px;

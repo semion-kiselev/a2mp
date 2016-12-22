@@ -6,7 +6,7 @@ import { TownWeather } from '../shared/interfaces/TownWeather';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	selector: 'towns-item',
 	template: `
-		<li class="b-towns-item">
+		<li class="b-towns-item" [dTempBg]="item.temp">
 			<div class="row">
 				<div class="towns-item__name-wrapper col">
 					<div class="towns-item__name">{{ item.name }}</div>
@@ -14,12 +14,17 @@ import { TownWeather } from '../shared/interfaces/TownWeather';
 				<div class="towns-item__info-wrapper col pull-right">
 					<div class="row">
 						<div class="towns-item__icon col">
-							<i class="weather-icon {{ item.icon }}"></i>
+							<weather-icon [icon]="item.icon"></weather-icon>
 						</div>
 						<div class="towns-item__temp col">
 							{{ item.temp }}<sup class="towns-item__sup">°C</sup>
 						</div>
-						<div class="towns-item__description col">{{ item.description }}</div>
+						<div class="towns-item__wind col">
+							<weather-wind
+								[speed]="item.windSpeed" 
+								[deg]="item.windDeg"
+							></weather-wind>
+						</div>
 					</div>
 				</div>
 			</div>
