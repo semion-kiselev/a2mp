@@ -161,16 +161,26 @@ export class OpenWeatherService {
 
 		let townsWeather: TownWeather[] = this.data.getValue();
 		
-		townsWeather.forEach(item => {
-			if (item.id === townId) {
-				item.favorite = !item.favorite;
-			} else {
-				item.favorite = false;
+		const newtownsWeather = townsWeather.map(item => {
+			let newItem: TownWeather = {
+				id: null, name: null, description: null, icon: null, temp: null, favorite: null
+			};
+
+			for (let key in item ) {
+				newItem[key] = item[key];
 			}
+
+			if (newItem.id === townId) {
+				newItem.favorite = !newItem.favorite;
+			} else {
+				newItem.favorite = false;
+			}
+
+			return newItem;
 		});
 
-		this.data.next(townsWeather);
-		this.saveTownsToStorage(townsWeather);
+		this.data.next(newtownsWeather);
+		this.saveTownsToStorage(newtownsWeather);
 	}
 
 	private getUrlForTownsWeather(townsIds: string): string {
