@@ -162,9 +162,7 @@ export class OpenWeatherService {
 		let townsWeather: TownWeather[] = this.data.getValue();
 		
 		const newtownsWeather = townsWeather.map(item => {
-			let newItem: TownWeather = {
-				id: null, name: null, description: null, icon: null, temp: null, favorite: null
-			};
+			let newItem: TownWeather = <TownWeather>{};
 
 			for (let key in item ) {
 				newItem[key] = item[key];
