@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>RxJs Examples</title>
+</head>
+<body>
+	<button id="Start">Start examples with random values streams</button>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/5.0.1/Rx.min.js"></script>
+	<script>
+		const btn = document.getElementById('Start');
+
+		const setObserver = (name) => {
+			return {
+				next(value) {
+					console.log(name + ' ' + value);
+				},
+				error(error) {
+					console.log(name + ' ' + error);
+				},
+				complete() {
+					console.log('%c' + name + ' completed', 'color: #a94442');
+				}
+			}
+		}
+
+		function getRandom() {
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve(Math.round(Math.random()*10000));
+				}, 1000);
+			});
+		}
+
+		const mergeMapStream$ = Rx.Observable.interval(500).take(3).mergeMap(getRandom);
+		const switchMapStream$ = Rx.Observable.interval(500).take(3).switchMap(getRandom);
+		const mergeStream$ = Rx.Observable.merge(
+			Rx.Observable.interval(500).take(3).mergeMap(getRandom).map(num => `${num} from mergeMapStream1`),
+			Rx.Observable.interval(500).take(3).mergeMap(getRandom).map(num => `${num} from mergeMapStream2`)
+		);
+		const concatStream$ = Rx.Observable.concat(
+			Rx.Observable.interval(500).take(3).mergeMap(getRandom).map(num => `${num} from mergeMapStream1`),
+			Rx.Observable.interval(500).take(3).mergeMap(getRandom).map(num => `${num} from mergeMapStream2`)
+		);
+		const rangeStream$ = Rx.Observable.range(10, 3);
+		const asyncRangeStream$ = Rx.Observable.range(10, 3).observeOn(Rx.Scheduler.async);
+
+		const mergeMapStreamObserver = setObserver('mergeMapStream example');
+		const switchMapStreamObserver = setObserver('switchMapStream example');
+		const mergeStreamObserver = setObserver('mergeStream example');
+		const concatStreamObserver = setObserver('concatStream example');
+		const rangeStreamObserver = setObserver('rangeStream example');
+		const asyncRangeStreamObserver = setObserver('asyncRangeStream example');
+
+		mergeMapStreamObserver.complete = () => {
+			console.log('%cmergeMapStream example complete', 'color: #a94442');
+			console.log('');
+			console.log('%cswitchMapStream example start', 'color: #a94442');
+			switchMapStream$.subscribe(switchMapStreamObserver);
+		};
+
+		switchMapStreamObserver.complete = () => {
+			console.log('%cswitchMapStream example complete', 'color: #a94442');
+			console.log('');
+			console.log('%cmergeStream example start', 'color: #a94442');
+			mergeStream$.subscribe(mergeStreamObserver);
+		};
+
+		mergeStreamObserver.complete = () => {
+			console.log('%cmergeStream example complete', 'color: #a94442');
+			console.log('');
+			console.log('%cconcatStream example start', 'color: #a94442');
+			concatStream$.subscribe(concatStreamObserver);
+		};
+
+		concatStreamObserver.complete = () => {
+			console.log('%cconactStream example complete', 'color: #a94442');
+			console.log('');
+			console.log('%cScheduler async example start', 'color: #a94442');
+
+			console.log('%crangeStream before subscription', 'color: #3c763d');
+			rangeStream$.subscribe(rangeStreamObserver);
+			console.log('%crangeStream after subscription', 'color: #3c763d');
+			console.log('');
+
+			console.log('%casyncRangeStream before subscription', 'color: #3c763d');
+			asyncRangeStream$.subscribe(asyncRangeStreamObserver);
+			console.log('%casyncRangeStream after subscription', 'color: #3c763d');
+		};
+
+		btn.onclick = () => {
+			console.log('%cmergeMapStream example start', 'color: #a94442');
+			mergeMapStream$.subscribe(mergeMapStreamObserver);
+		}
+
+	</script>
+</body>
+</html>

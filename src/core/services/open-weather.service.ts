@@ -47,6 +47,8 @@ export class OpenWeatherService {
 			this.getTownsWeatherError.next('');
 
 			this.http.get(url)
+				.retry(1)
+				.do(() => console.log('received towns weather'))
 				.map(result => result.json())
 				.map(parsedResult => this.formatFetchedTownsWeatherData(parsedResult))
 				.map(formatedData => this.setFavoriteTown(formatedData, savedTowns))
