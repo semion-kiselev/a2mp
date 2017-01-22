@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { TownWeather } from '../../shared/interfaces/TownWeather';
 import { OpenWeatherResponseItem, OpenWeatherResponse } from '../../shared/interfaces/OpenWeatherResponse';
 import { openWeatherApiKey } from '../../app.config';
+import { LoggerService } from './logger.service';
 
 interface SavedTown {
 	id: number;
@@ -34,9 +35,11 @@ export class OpenWeatherService {
 	private updateSubscription: Subscription;
 	private updateInProgress: boolean = false;
 
-	constructor(@Inject(Http) private http: Http) {}
+	constructor(@Inject(Http) private http: Http, @Inject(LoggerService) private logger: LoggerService) {}
 
 	public getTownsWeather(): void {
+		this.logger.log('start receiving towns weather', 'blue');
+
 		const savedTowns: SavedTown[] = this.getTownsFromStorage();
 
 		if ( savedTowns ) {
@@ -48,7 +51,7 @@ export class OpenWeatherService {
 
 			this.http.get(url)
 				.retry(1)
-				.do(() => console.log('received towns weather'))
+				.do(() => this.logger.log('received towns weather', 'green'))
 				.map(result => result.json())
 				.map(parsedResult => this.formatFetchedTownsWeatherData(parsedResult))
 				.map(formatedData => this.setFavoriteTown(formatedData, savedTowns))
@@ -58,6 +61,7 @@ export class OpenWeatherService {
 						this.data.next(formatedData);
 					},
 					error => {
+						this.logger.log('error receiving towns weather', 'red');
 						this.isLoadingTownsWeather.next(false);
 						this.getTownsWeatherError.next(error + '');
 					}

@@ -1,12 +1,13 @@
-var webpack = require('webpack');
-var webpackMerge = require('webpack-merge');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var commonConfig = require('./webpack.common.js');
-var helpers = require('./helpers');
-var root = helpers.root;
+const webpack = require('webpack');
+const webpackMerge = require('webpack-merge');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ngToolsWebpack = require('@ngtools/webpack');
+const commonConfig = require('./webpack.common.js');
+const helpers = require('./helpers');
+const root = helpers.root;
 
 module.exports = webpackMerge(commonConfig, {
-  devtool: null,
+  devtool: false,
 
   output: {
     path: root('dist'),
@@ -14,18 +15,31 @@ module.exports = webpackMerge(commonConfig, {
     filename: '[name].[hash].js'
   },
 
-  htmlLoader: {
-    minimize: false
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        include: root('src'),
+        loader: '@ngtools/webpack'
+      }
+    ]
   },
-
+  
   plugins: [
-    new webpack.NoErrorsPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   mangle: {
-    //     keep_fnames: true
-    //   }
-    // }),
-    new ExtractTextPlugin('[name].[hash].css')
+    new ngToolsWebpack.AotPlugin({
+      tsConfigPath: './tsconfig.json',
+      entryModule: './src/app.module#AppModule'
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      mangle: {
+        keep_fnames: true
+      }
+    }),
+    new ExtractTextPlugin('[name].[hash].css'),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    })
   ]
 });

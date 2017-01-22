@@ -1,40 +1,34 @@
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var helpers = require('./helpers');
-var root = helpers.root;
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const helpers = require('./helpers');
+const root = helpers.root;
 
 module.exports = {
    resolve: {
-    root: root('src'),
-    extensions: ['', '.ts', '.js']
+    extensions: ['.ts', '.js']
   },
 
   entry: {
-    'app': 'main.ts'
+    'app': './src/main.ts'
   },
 
   module: {
-    loaders: [
-      {
-        test: /\.ts$/,
-        include: root('src'),
-        loaders: ['awesome-typescript-loader', 'angular2-template-loader']
-      },
+    rules: [
       {
         test: /\.html$/,
         include: root('src'),
-        loader: 'html'
+        loader: 'html-loader'
       },
       {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
         include: root('src'),
-        loader: 'url?{limit: 20000, name: "assets/[name].[hash].[ext]"}'
+        loader: 'url-loader?{limit: 20000, name: "assets/[name].[hash].[ext]"}'
       },
       {
         test: /\.scss$/,
         include: root('src'),
-        loader: ExtractTextPlugin.extract('style', 'css!sass')
+        loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
       }
     ]
   },
@@ -42,6 +36,10 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: root('index.html')
-    })
+    }),
+    new webpack.ContextReplacementPlugin(
+      /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
+      __dirname
+    )
   ]
 };
