@@ -7,68 +7,46 @@ import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TownWeather } from '../../shared/interfaces/TownWeather';
+import { SavedTown } from '../../shared/interfaces/SavedTown';
 import { OpenWeatherResponseItem, OpenWeatherResponse } from '../../shared/interfaces/OpenWeatherResponse';
 import { openWeatherApiKey } from '../../app.config';
-import { LoggerService } from './logger.service';
 
-interface SavedTown {
-	id: number;
-	favorite: boolean;
-}
+import { Store } from '@ngrx/store';
+import { State } from '../../towns/reducers';
+import { FetchTownsSuccess } from '../../towns/actions';
 
 Injectable()
 export class OpenWeatherService {
 	private apiKey: string = openWeatherApiKey;
 	private weatherByTownNameUrl: string = 'http://api.openweathermap.org/data/2.5/weather?q={{townName}}&units=metric';
 	private weatherByTownsIds: string = 'http://api.openweathermap.org/data/2.5/group?id={{townsIds}}&units=metric';
-	private freshTimeInMs: number = 10*1000;
+	private freshTimeInMs: number = 60*1000;
 	private localStorageAccessKey: string = 'savedTowns';
-
-	public data: BehaviorSubject<TownWeather[]> = new BehaviorSubject([]);
-
-	public getTownsWeatherError: BehaviorSubject<string> = new BehaviorSubject('');
-	public getTownWeatherError: BehaviorSubject<string> = new BehaviorSubject('');
-	public duplicateTownWeatherError: BehaviorSubject<string> = new BehaviorSubject('');
-	public isLoadingTownsWeather: BehaviorSubject<boolean> = new BehaviorSubject(false);
-	public isLoadingTownWeather: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 	private updateSubscription: Subscription;
 	private updateInProgress: boolean = false;
+	private isLoadingTownsWeather: boolean = false;
+	private isLoadingTownWeather: boolean = false;
 
-	constructor(@Inject(Http) private http: Http, @Inject(LoggerService) private logger: LoggerService) {}
-
-	public getTownsWeather(): void {
-		this.logger.log('start receiving towns weather', 'blue');
-
-		const savedTowns: SavedTown[] = this.getTownsFromStorage();
-
-		if ( savedTowns ) {
-			const townsIds: string = _.map(savedTowns, 'id').join(',');
-			const url: string = this.getUrlForTownsWeather(townsIds);
-
-			this.isLoadingTownsWeather.next(true);
-			this.getTownsWeatherError.next('');
-
-			this.http.get(url)
-				.retry(1)
-				.do(() => this.logger.log('received towns weather', 'green'))
-				.map(result => result.json())
-				.map(parsedResult => this.formatFetchedTownsWeatherData(parsedResult))
-				.map(formatedData => this.setFavoriteTown(formatedData, savedTowns))
-				.subscribe(
-					formatedData => {
-						this.isLoadingTownsWeather.next(false);
-						this.data.next(formatedData);
-					},
-					error => {
-						this.logger.log('error receiving towns weather', 'red');
-						this.isLoadingTownsWeather.next(false);
-						this.getTownsWeatherError.next(error + '');
-					}
-				);
-		}
+	constructor(
+		@Inject(Http) private http: Http,
+		@Inject(Store) private store: Store<State>,
+	) {
+		this.store.select('data').subscribe((data: TownWeather[]) => this.saveTownsToStorage(data));
+		this.store.select('isLoadingTownsWeather').subscribe((value: boolean) => this.isLoadingTownsWeather = value);
+		this.store.select('isLoadingTownWeather').subscribe((value: boolean) => this.isLoadingTownWeather = value);
 	}
 
+	public getTownsWeather(savedTowns: SavedTown[]): Observable<TownWeather[]> {
+		const townsIds: string = _.map(savedTowns, 'id').join(',');
+		const url: string = this.getUrlForTownsWeather(townsIds);
+
+		return this.http.get(url)
+			.map(result => result.json())
+			.map(parsedResult => this.formatFetchedTownsWeatherData(parsedResult))
+			.map(formatedData => this.setFavoriteTown(formatedData, savedTowns));
+	}
+ 
 	public startTownsWeatherPeriodicUpdate(): void	{
 		this.deferUpdate();
 	}
@@ -78,113 +56,43 @@ export class OpenWeatherService {
 	}
 
 	private updateWeather(): void {
-		if (this.isLoadingTownsWeather.getValue() || this.isLoadingTownWeather.getValue() || this.updateInProgress) {
+		if (this.isLoadingTownsWeather || this.isLoadingTownWeather || this.updateInProgress) {
 			this.deferUpdate();
 			return;
 		}
 
-		const townsWeather: TownWeather[] = this.data.getValue();
+		const savedTowns: SavedTown[] = this.getTownsFromStorage();
 
-		if (townsWeather.length === 0) {
+		if (!savedTowns) {
 			this.deferUpdate();
 			return;
 		}
 
 		this.updateInProgress = true;
 
-		const townsIds: string = _.map(townsWeather, 'id').join(',');
-		const url: string = this.getUrlForTownsWeather(townsIds);
+		this.updateSubscription = this.getTownsWeather(savedTowns)
+			.subscribe(
+				formatedData => {
+					this.store.dispatch(new FetchTownsSuccess(formatedData));
 
-		this.updateSubscription = this.http.get(url)
-				.map(result => result.json())
-				.map(parsedResult => this.formatFetchedTownsWeatherData(parsedResult))
-				.map(formatedData => this.setFavoriteTown(formatedData, townsWeather))
-				.subscribe(
-					formatedData => {
-						this.data.next(formatedData);
-
-						this.updateInProgress = false;
-						this.deferUpdate();
-					},
-					error => {
-						this.updateInProgress = false;
-						this.deferUpdate();	
-					}
-				);
+					this.updateInProgress = false;
+					this.deferUpdate();
+				},
+				error => {
+					this.updateInProgress = false;
+					this.deferUpdate();	
+				}
+			);
 	}
 
-	public addTown(townName: string): void {
+	public addTown(townName: string): Observable<TownWeather> {
 		this.cancelAndDeferUpdateIfInProgress();
 
 		const url = this.getUrlForTownWeather(townName);
 
-		this.isLoadingTownWeather.next(true);
-		this.getTownWeatherError.next('');
-
-		this.http.get(url)
+		return this.http.get(url)
 			.map(result => result.json())
-			.map(parsedResult => this.formatFetchedTownWeatherData(parsedResult))
-			.subscribe(
-				townWeather => {
-					this.isLoadingTownWeather.next(false);
-
-					if (this.isThisTownAlreadyExists(townWeather.id)) {
-						this.duplicateTownWeatherError.next(
-							`This town is already observed. It\'s name ${townWeather.name}`
-						);
-
-						setTimeout(() => this.duplicateTownWeatherError.next(''), 3000);
-
-						return false;
-					}
-
-					const townsWeather: TownWeather[] = this.data.getValue();
-					const newTownsWeather: TownWeather[] = townsWeather.concat([townWeather]);
-
-					this.data.next(newTownsWeather);
-					this.saveTownsToStorage(newTownsWeather);
-				},
-				error => {
-					this.isLoadingTownWeather.next(false);
-					this.getTownWeatherError.next(error + '');
-				}
-			);
-
-	}
-
-	public deleteTown(townId: number): void {
-		this.cancelAndDeferUpdateIfInProgress();
-
-		let townsWeather: TownWeather[] = this.data.getValue();
-		townsWeather = townsWeather.filter(item => item.id !== townId);
-
-		this.data.next(townsWeather);
-		this.saveTownsToStorage(townsWeather);
-	}
-
-	public toggleFavorite(townId: number): void {
-		this.cancelAndDeferUpdateIfInProgress();
-
-		let townsWeather: TownWeather[] = this.data.getValue();
-		
-		const newtownsWeather = townsWeather.map(item => {
-			let newItem: TownWeather = <TownWeather>{};
-
-			for (let key in item ) {
-				newItem[key] = item[key];
-			}
-
-			if (newItem.id === townId) {
-				newItem.favorite = !newItem.favorite;
-			} else {
-				newItem.favorite = false;
-			}
-
-			return newItem;
-		});
-
-		this.data.next(newtownsWeather);
-		this.saveTownsToStorage(newtownsWeather);
+			.map(parsedResult => this.formatFetchedTownWeatherData(parsedResult));
 	}
 
 	private getUrlForTownsWeather(townsIds: string): string {
@@ -195,7 +103,7 @@ export class OpenWeatherService {
 		return `${this.weatherByTownNameUrl.replace(/\{\{townName\}\}/, townName)}&appid=${this.apiKey}`;
 	}	
 
-	private formatFetchedTownsWeatherData(data: OpenWeatherResponse): TownWeather[] {
+	public formatFetchedTownsWeatherData(data: OpenWeatherResponse): TownWeather[] {
 		return data.list.map(this.formatFetchedTownWeatherData);
 	}
 
@@ -212,7 +120,7 @@ export class OpenWeatherService {
 		};
 	}
 
-	private setFavoriteTown(formatedData: TownWeather[], savedTowns: SavedTown[]): TownWeather[] {
+	public setFavoriteTown(formatedData: TownWeather[], savedTowns: SavedTown[]): TownWeather[] {
 		for (let town of formatedData) {
 			for (let savedTown of savedTowns) {
 				if (town.id === savedTown.id) {
@@ -224,9 +132,14 @@ export class OpenWeatherService {
 		return formatedData;
 	}
 
-	private isThisTownAlreadyExists(townId: number): boolean {
-		const currentTowns: TownWeather[] = this.data.getValue();
-		for (let town of currentTowns) {
+	public isThisTownAlreadyExists(townId: number): boolean {
+		const savedTowns: SavedTown[] = this.getTownsFromStorage();
+
+		if (!savedTowns) {
+			return false;
+		}
+
+		for (let town of savedTowns) {
 			if (town.id === townId) {
 				return true;
 			}
@@ -234,7 +147,7 @@ export class OpenWeatherService {
 		return false;
 	}
 
-	private cancelAndDeferUpdateIfInProgress(): void {
+	public cancelAndDeferUpdateIfInProgress(): void {
 		if (this.updateInProgress) {
 			this.updateSubscription.unsubscribe();
 			this.updateInProgress = false;
@@ -243,17 +156,19 @@ export class OpenWeatherService {
 	}
 
 	private saveTownsToStorage(data: TownWeather[]): void {
-		const dataToSave: SavedTown[] = data.map(item => { 
-			return {
-				id: item.id,
-				favorite: item.favorite
-			};
-		});
+		if (data.length !== 0) {
+			const dataToSave: SavedTown[] = data.map(item => { 
+				return {
+					id: item.id,
+					favorite: item.favorite
+				};
+			});
 
-		localStorage.setItem(this.localStorageAccessKey, JSON.stringify(dataToSave));
+			localStorage.setItem(this.localStorageAccessKey, JSON.stringify(dataToSave));
+		}
 	}
 
-	private getTownsFromStorage(): SavedTown[] {
+	public getTownsFromStorage(): SavedTown[] {
 		const savedTowns: string = localStorage.getItem(this.localStorageAccessKey);
 		let parsedSavedTowns: SavedTown[];
 

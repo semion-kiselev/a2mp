@@ -1,6 +1,6 @@
 import './towns-item.component.scss';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { TownWeather } from '../shared/interfaces/TownWeather';
+import { TownWeather } from '../../shared/interfaces/TownWeather';
 
 @Component({
 	changeDetection: ChangeDetectionStrategy.OnPush,

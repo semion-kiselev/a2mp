@@ -1,8 +1,10 @@
 import './towns.component.scss';
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { State } from '../reducers';
 
-import { TownWeather } from '../shared/interfaces/TownWeather';
-import { OpenWeatherService } from '../core/services/open-weather.service';
+import { TownWeather } from '../../shared/interfaces/TownWeather';
+import { FetchTowns, AddTown, DeleteTown, ToggleFavorite } from '../actions';
 
 @Component({
 	selector: 'towns',
@@ -76,9 +78,8 @@ export class TownsComponent implements OnInit {
 	private townsOverloadError: boolean = false;
 	private isLoadingTownsWeather: boolean = false;
 	private isLoadingTownWeather: boolean = false;
-	
 
-	constructor(private OWS: OpenWeatherService) {}
+	constructor(private store: Store<State>) {}
 
 	get pageQty(): number {
 		return Math.ceil(this.data.length / this.rowsPerPage);
@@ -93,7 +94,7 @@ export class TownsComponent implements OnInit {
 	}	
 
 	ngOnInit(): void {
-		this.OWS.data.subscribe((data: TownWeather[]) => {
+		this.store.select('data').subscribe((data: TownWeather[]) => {
 			if (this.data.length % this.rowsPerPage === 0 && 
 				data.length % this.rowsPerPage === 1 && 
 				this.data.length !== 0) {
@@ -108,14 +109,13 @@ export class TownsComponent implements OnInit {
 
 			this.data = data;	
 		});
-		this.OWS.getTownsWeatherError.subscribe((value: string) => this.getTownsWeatherError = value);
-		this.OWS.getTownWeatherError.subscribe((value: string) => this.getTownWeatherError = value);
-		this.OWS.duplicateTownWeatherError.subscribe((value: string) => this.duplicateTownWeatherError = value);
-		this.OWS.isLoadingTownsWeather.subscribe((value: boolean) => this.isLoadingTownsWeather = value);
-		this.OWS.isLoadingTownWeather.subscribe((value: boolean) => this.isLoadingTownWeather = value);
+		this.store.select('getTownsWeatherError').subscribe((value: string) => this.getTownsWeatherError = value);
+		this.store.select('getTownWeatherError').subscribe((value: string) => this.getTownWeatherError = value);
+		this.store.select('duplicateTownWeatherError').subscribe((value: string) => this.duplicateTownWeatherError = value);
+		this.store.select('isLoadingTownsWeather').subscribe((value: boolean) => this.isLoadingTownsWeather = value);
+		this.store.select('isLoadingTownWeather').subscribe((value: boolean) => this.isLoadingTownWeather = value);
 
-		this.OWS.getTownsWeather();
-		// this.OWS.startTownsWeatherPeriodicUpdate();
+		this.store.dispatch(new FetchTowns());
 	}
 
 	onPageChange(pageIndex: number): void {
@@ -124,7 +124,7 @@ export class TownsComponent implements OnInit {
 
 	onAddTown(townName: string): void {
 		if (this.data.length < 20) {
-			this.OWS.addTown(townName);
+			this.store.dispatch(new AddTown(townName));
 		} else {
 			this.townsOverloadError = true;
 			setTimeout(() => this.townsOverloadError = false, 2000);
@@ -132,10 +132,10 @@ export class TownsComponent implements OnInit {
 	}
 
 	onDeleteTown(townId: number): void {
-		this.OWS.deleteTown(townId);
+		this.store.dispatch(new DeleteTown(townId));
 	}
 
 	onToggleFavorite(townId: number): void {
-		this.OWS.toggleFavorite(townId);
+		this.store.dispatch(new ToggleFavorite(townId));
 	}
 }

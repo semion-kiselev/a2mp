@@ -60,7 +60,7 @@
 		display: block;
 		width: 16px;
 		height: 16px;
-		background: url('../shared/images/arrow-up2.svg') 0 0 no-repeat;
+		background: url('../../shared/images/arrow-up2.svg') 0 0 no-repeat;
 		background-size: 16px 16px; 
 	}
 
@@ -70,12 +70,12 @@
 		right: 12px;
 		width: 16px;
 		height: 16px;
-		background: url('../shared/images/cancel-circle.svg') 0 0 no-repeat;
+		background: url('../../shared/images/cancel-circle.svg') 0 0 no-repeat;
 		background-size: 16px 16px;
 		cursor: pointer;
 
 		&:hover {
-			background-image: url('../shared/images/cancel-circle-hovered.svg');
+			background-image: url('../../shared/images/cancel-circle-hovered.svg');
 		}
 	}
 
@@ -85,16 +85,16 @@
 		left: 13px;
 		width: 16px;
 		height: 16px;
-		background: url('../shared/images/star-empty.svg') 0 0 no-repeat;
+		background: url('../../shared/images/star-empty.svg') 0 0 no-repeat;
 		background-size: 16px 16px;
 		cursor: pointer;
 
 		&:hover {
-			background-image: url('../shared/images/star-empty-hovered.svg');
+			background-image: url('../../shared/images/star-empty-hovered.svg');
 		}
 
 		&.--active {
-			background-image: url('../shared/images/star-full.svg');	
+			background-image: url('../../shared/images/star-full.svg');	
 		}
 	}
 

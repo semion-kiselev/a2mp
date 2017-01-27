@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
-import { TownsComponent } from './towns.component';
-import { TownsListComponent } from './towns-list.component';
-import { TownsItemComponent } from './towns-item.component';
-import { AddTownComponent } from './add-town.component';
-import { WeatherIconComponent } from './weather-icon.component';
-import { WeatherWindComponent } from './weather-wind.component';
+
+import { TownsComponent } from './components/towns.component';
+import { TownsListComponent } from './components/towns-list.component';
+import { TownsItemComponent } from './components/towns-item.component';
+import { AddTownComponent } from './components/add-town.component';
+import { WeatherIconComponent } from './components/weather-icon.component';
+import { WeatherWindComponent } from './components/weather-wind.component';
 
 import { TempBgDirective } from './directives/temp-bg.directive';
 import { WindDegDirective } from './directives/wind-deg.directive';
