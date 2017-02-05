@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Effect, Actions } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
+import { Store } from '@ngrx/store';
+import { State } from './reducers';
+import { ToggleFavoriteSuccess } from './actions';
 
 import * as TownWeatherActions from './actions';
 import { OpenWeatherService } from '../core/services/open-weather.service';
@@ -12,7 +15,8 @@ import { SavedTown } from '../shared/interfaces/SavedTown';
 export class TownWeatherEffects {
 	constructor(
 		private actions$: Actions, 
-		private OWS: OpenWeatherService
+		private OWS: OpenWeatherService,
+		private store: Store<State>
 	) {}
 
 	@Effect()
@@ -28,7 +32,7 @@ export class TownWeatherEffects {
 				})
 			}
 
-			this.OWS.startTownsWeatherPeriodicUpdate();
+			// this.OWS.startTownsWeatherPeriodicUpdate();
 
 			return this.OWS.getTownsWeather(savedTowns)
 				.map(formatedData => ({
@@ -54,6 +58,12 @@ export class TownWeatherEffects {
 								type: TownWeatherActions.ActionTypes.ADD_TOWN_DUPLICATE_FAILURE,
 								payload: `This town is already observed. It\'s name ${townWeather.name}`
 							}
+						}
+
+						if (action.payload.markTownAsFavorite) {
+							setTimeout(() => {
+								this.store.dispatch(new ToggleFavoriteSuccess(townWeather.id));
+							}, 0);
 						}
 
 						return {

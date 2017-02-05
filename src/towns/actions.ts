@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { TownWeather } from '../shared/interfaces/TownWeather';
+import { AddTownFormData } from '../shared/interfaces/AddTownFormData';
 
 export const ActionTypes = {
     FETCH_TOWNS: 'FETCH_TOWNS',
@@ -38,7 +39,7 @@ export class FetchTownsFailure implements Action  {
 export class AddTown implements Action  {
 	type = ActionTypes.ADD_TOWN;
 
-	constructor(public payload: string) {}
+	constructor(public payload: AddTownFormData) {}
 }
 
 export class AddTownSuccess implements Action  {

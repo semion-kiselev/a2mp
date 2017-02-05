@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { TownWeather } from '../../shared/interfaces/TownWeather';
 import { SavedTown } from '../../shared/interfaces/SavedTown';
 import { OpenWeatherResponseItem, OpenWeatherResponse } from '../../shared/interfaces/OpenWeatherResponse';
+import { AddTownFormData } from '../../shared/interfaces/AddTownFormData';
 import { openWeatherApiKey } from '../../app.config';
 
 import { Store } from '@ngrx/store';
@@ -85,10 +86,10 @@ export class OpenWeatherService {
 			);
 	}
 
-	public addTown(townName: string): Observable<TownWeather> {
+	public addTown(townData: AddTownFormData): Observable<TownWeather> {
 		this.cancelAndDeferUpdateIfInProgress();
 
-		const url = this.getUrlForTownWeather(townName);
+		const url = this.getUrlForTownWeather(townData.townName);
 
 		return this.http.get(url)
 			.map(result => result.json())

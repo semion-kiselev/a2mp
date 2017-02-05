@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { State } from '../reducers';
 
 import { TownWeather } from '../../shared/interfaces/TownWeather';
+import { AddTownFormData } from '../../shared/interfaces/AddTownFormData';
 import { FetchTowns, AddTown, DeleteTown, ToggleFavorite } from '../actions';
 
 @Component({
@@ -122,9 +123,9 @@ export class TownsComponent implements OnInit {
 		this.currentPageIndex = pageIndex;
 	}
 
-	onAddTown(townName: string): void {
+	onAddTown(townData: AddTownFormData): void {
 		if (this.data.length < 20) {
-			this.store.dispatch(new AddTown(townName));
+			this.store.dispatch(new AddTown(townData));
 		} else {
 			this.townsOverloadError = true;
 			setTimeout(() => this.townsOverloadError = false, 2000);
