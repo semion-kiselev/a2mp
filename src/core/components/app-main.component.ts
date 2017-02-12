@@ -3,13 +3,8 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-main',
 	template: `
-		<h1 class="root__title">Towns' Weather to Observe</h1>
-	    <div class="root__towns">
-    		<towns></towns>
-	    </div>
-	    <div class="root__map">
-	    	<map></map>
-	    </div>
+		<router-outlet name="current-place"></router-outlet>
+		<router-outlet></router-outlet>
 	`
 })
 export class MainComponent {}

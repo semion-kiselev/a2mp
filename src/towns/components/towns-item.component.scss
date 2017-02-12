@@ -3,9 +3,10 @@
 	padding: 0 40px;
 	border: 1px solid #ccc;
 	border-bottom-width: 0;
+	cursor: pointer;
 
 	&:hover {
-		background: #eceeef;
+		background: #eceeef !important;
 
 		.towns-item__temp {
 			position: relative;

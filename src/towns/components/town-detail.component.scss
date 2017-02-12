@@ -1,0 +1,43 @@
+.b-town-detail {
+	position: relative;
+	margin: 40px 0;
+	padding: 20px 10px 30px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+
+	.town-detail__title {
+		margin-bottom: 20px;
+		text-align: center;
+	}	
+
+	.town-detail__list {
+		&:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
+	}
+
+	.town-detail__item {
+		float: left;
+		width: 33.33333%;
+		padding: 0 20px;
+		text-align: center;
+		font-size: 18px;
+	}
+
+	.town-detail__cancel-icon {
+		position: absolute;
+		top: 12px;
+		right: 12px;
+		width: 16px;
+		height: 16px;
+		background: url('../../shared/images/cancel-circle.svg') 0 0 no-repeat;
+		background-size: 16px 16px;
+		cursor: pointer;
+
+		&:hover {
+			background-image: url('../../shared/images/cancel-circle-hovered.svg');
+		}
+	}
+}

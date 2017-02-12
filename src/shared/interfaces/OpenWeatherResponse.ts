@@ -17,6 +17,8 @@ interface OpenWeatherResponseItemMain {
 
 interface OpenWeatherResponseItemSys {
 	country: string;
+	sunrise: number;
+	sunset: number;
 }
 
 interface OpenWeatherResponseItemWeaterItem {

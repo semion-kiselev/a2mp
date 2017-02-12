@@ -19,8 +19,13 @@ import { FetchTownsSuccess } from '../../towns/actions';
 Injectable()
 export class OpenWeatherService {
 	private apiKey: string = openWeatherApiKey;
-	private weatherByTownNameUrl: string = 'http://api.openweathermap.org/data/2.5/weather?q={{townName}}&units=metric';
+
+	private weatherByTownName: string = 'http://api.openweathermap.org/data/2.5/weather?q={{townName}}&units=metric';
 	private weatherByTownsIds: string = 'http://api.openweathermap.org/data/2.5/group?id={{townsIds}}&units=metric';
+	private weatherByTownId: string = 'http://api.openweathermap.org/data/2.5/weather?id={{townId}}&units=metric';
+	private weatherByCoords: string = 
+					'http://api.openweathermap.org/data/2.5/weather?lat={{latitude}}&lon={{longitude}}&units=metric';
+
 	private freshTimeInMs: number = 60*1000;
 	private localStorageAccessKey: string = 'savedTowns';
 
@@ -46,6 +51,22 @@ export class OpenWeatherService {
 			.map(result => result.json())
 			.map(parsedResult => this.formatFetchedTownsWeatherData(parsedResult))
 			.map(formatedData => this.setFavoriteTown(formatedData, savedTowns));
+	}
+
+	public getTownWeatherById(townId: number): Observable<TownWeather> {
+		const url = this.getUrlForTownWeatherById(townId);
+
+		return this.http.get(url)
+			.map(result => result.json())
+			.map(parsedResult => this.formatFetchedTownWeatherData(parsedResult));	
+	}
+
+	public getTownWeatherByCoords(latitude: number, longitude: number): Observable<TownWeather> {
+		const url = this.getUrlForTownWeatherByCoords(latitude, longitude);
+
+		return this.http.get(url)
+			.map(result => result.json())
+			.map(parsedResult => this.formatFetchedTownWeatherData(parsedResult));
 	}
  
 	public startTownsWeatherPeriodicUpdate(): void	{
@@ -101,7 +122,17 @@ export class OpenWeatherService {
 	}
 
 	private getUrlForTownWeather(townName: string): string {
-		return `${this.weatherByTownNameUrl.replace(/\{\{townName\}\}/, townName)}&appid=${this.apiKey}`;
+		return `${this.weatherByTownName.replace(/\{\{townName\}\}/, townName)}&appid=${this.apiKey}`;
+	}
+
+	private getUrlForTownWeatherById(townId: number): string {
+		return `${this.weatherByTownId.replace(/\{\{townId\}\}/, '' + townId)}&appid=${this.apiKey}`;
+	}
+
+	private getUrlForTownWeatherByCoords(latitude: number, longitude: number): string {
+		return `${this.weatherByCoords
+				.replace(/\{\{latitude\}\}/, '' + latitude)
+				.replace(/\{\{longitude}\}/, '' + longitude)}&appid=${this.apiKey}`;
 	}	
 
 	public formatFetchedTownsWeatherData(data: OpenWeatherResponse): TownWeather[] {
@@ -109,6 +140,12 @@ export class OpenWeatherService {
 	}
 
 	private formatFetchedTownWeatherData(data: OpenWeatherResponseItem): TownWeather {
+		const sunriseDate = new Date(data.sys.sunrise * 1000);
+		const sunsetDate = new Date(data.sys.sunset * 1000);
+
+		const getHours = (d: Date) => d.getHours().toString().length === 1 ? '0' + d.getHours() : d.getHours();
+		const getMinutes = (d: Date) => d.getMinutes().toString().length === 1 ? '0' + d.getMinutes() : d.getMinutes();
+
 		return {
 			id: data.id,
 			name: data.name,
@@ -117,7 +154,10 @@ export class OpenWeatherService {
 			temp: Math.round(data.main.temp),
 			favorite: false,
 			windSpeed: Math.round(data.wind.speed),
-			windDeg: data.wind.deg
+			windDeg: data.wind.deg,
+			humidity: data.main.humidity + '%',
+			sunrise: getHours(sunriseDate) + ':' + getMinutes(sunriseDate),
+			sunset: getHours(sunsetDate) + ':' + getMinutes(sunsetDate)
 		};
 	}
 

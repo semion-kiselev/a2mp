@@ -13,7 +13,7 @@ import { GoogleMapsService } from '../core/services/google-maps.service';
 	template: `
 		<div class="b-map" [ngStyle]="{'height': hasError ? 'auto' : height + 'px'}">
 			<div *ngIf="hasError" class="map__error">
-				<alert type="danger" message="Whoops, something goes wrong with Google map..."></alert>
+			       <alert type="danger" message="Whoops, something goes wrong with Google map..."></alert>
 			</div>
 		</div>
 	`

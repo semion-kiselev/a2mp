@@ -12,23 +12,22 @@ module.exports = webpackMerge(commonConfig, {
   output: {
     path: root('dist'),
     publicPath: '/',
-    filename: '[name].[hash].js'
+    filename: '[name].[hash].js',
+    chunkFilename: '[id].[hash].chunk.js'
   },
 
   module: {
     rules: [
       {
         test: /\.ts$/,
-        include: root('src'),
-        loader: '@ngtools/webpack'
+        loaders: ['@ngtools/webpack', 'angular-router-loader']
       }
     ]
   },
   
   plugins: [
     new ngToolsWebpack.AotPlugin({
-      tsConfigPath: './tsconfig.json',
-      entryModule: './src/app.module#AppModule'
+      tsConfigPath: './tsconfig.json'
     }),
     new webpack.optimize.UglifyJsPlugin({
       mangle: {

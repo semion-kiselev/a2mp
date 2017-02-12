@@ -1,0 +1,18 @@
+.b-current-place {
+	margin-bottom: 30px;
+
+	.current-place__title {
+		margin-bottom: 15px;
+		text-align: center;
+	}
+
+	.b-towns-item {
+		border-bottom-width: 1px;
+		border-radius: 4px;
+		cursor: inherit;
+
+		&:hover {
+			background: none !important;
+		}
+	}
+}

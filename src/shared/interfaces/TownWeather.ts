@@ -7,6 +7,9 @@ interface TownWeather {
 	favorite: boolean;
 	windSpeed: number;
 	windDeg: number;
+	humidity: string;
+	sunrise: string;
+	sunset: string;
 }
 
 export { TownWeather };

@@ -11,6 +11,8 @@ import { FetchTowns, AddTown, DeleteTown, ToggleFavorite } from '../actions';
 	selector: 'towns',
 	template: `
 		<div class="b-towns">
+			<h1 class="towns__title">Towns' Weather to Observe</h1>
+
 			<div *ngIf="isLoadingTownsWeather" class="towns__loading">
 				<spinner></spinner>
 			</div>
@@ -55,6 +57,8 @@ import { FetchTowns, AddTown, DeleteTown, ToggleFavorite } from '../actions';
 					message="You were told - no more then twenty, remember?"
 				></alert>
 			</div>
+
+			<router-outlet></router-outlet>
 
 			<div class="towns__add">
 				<add-town 

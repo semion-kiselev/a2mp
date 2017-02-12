@@ -5,7 +5,7 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	selector: 'alert',
 	template: `
-		<div [ngClass]="{'b-alert': true, '--danger': type === 'danger', '--info': type === 'info'}">
+		<div [ngClass]="rootClasses">
 			{{ message }}
 		</div>
 	`
@@ -13,4 +13,13 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 export class AlertComponent {
 	@Input() private type: string;
 	@Input() private message: string;
+
+	get rootClasses() {
+		return {
+			'b-alert': true, 
+			'--danger': this.type === 'danger', 
+			'--info': this.type === 'info', 
+			'--warn': this.type === 'warn'
+		}
+	}
 };

@@ -11,6 +11,10 @@ export class GoogleMapsService {
 	private callbackName: string = '__googleMapsApiOnLoadCallback';
 
 	public load(options: LoadGoogleMapsApiOptions = {}): Promise<GoogleMaps> {
+		if ( window['google'] && window['google'].maps ) {
+			return Promise.resolve(window['google'].maps);
+		}
+
 		return new Promise((resolve, reject) => {
 			const serializedOptions: string = this.serialiseOptions(options);
 			this.createScriptTag(this.url, serializedOptions);

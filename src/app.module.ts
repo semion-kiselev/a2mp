@@ -10,12 +10,12 @@ import { townWeatherReducer } from './towns/reducers';
 
 @NgModule({
 	imports: [ 
-		BrowserModule, 
+		BrowserModule,
 		CoreModule,
 		StoreModule.provideStore(townWeatherReducer),
 		EffectsModule.run(TownWeatherEffects)
 	],
-	declarations: [ 
+	declarations: [
 		AppComponent
 	],
 	bootstrap: [ AppComponent ]
