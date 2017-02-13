@@ -2,9 +2,7 @@ import * as _ from 'lodash';
 import { Injectable, Inject } from '@angular/core';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
 import { Subscription } from 'rxjs/Subscription';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TownWeather } from '../../shared/interfaces/TownWeather';
 import { SavedTown } from '../../shared/interfaces/SavedTown';
@@ -32,6 +30,10 @@ export class OpenWeatherService {
 		@Inject(Http) private http: Http,
 		@Inject(Store) private store: Store<State>,
 	) {
+		this.subscribeToStoreData();
+	}
+
+	private subscribeToStoreData(): void {
 		this.store.select('data').subscribe((data: TownWeather[]) => this.saveTownsToStorage(data));
 		this.store.select('isLoadingTownsWeather').subscribe((value: boolean) => this.isLoadingTownsWeather = value);
 		this.store.select('isLoadingTownWeather').subscribe((value: boolean) => this.isLoadingTownWeather = value);
