@@ -25,5 +25,5 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 	`
 })
 export class SpinnerComponent {
-	@Input() private type: string;
+	@Input() public type: string;
 };

@@ -65,10 +65,10 @@ import { AddTownFormData } from '../../shared/interfaces/AddTownFormData';
 export class AddTownComponent {
 	@ViewChild('addTownForm') addTownForm: NgForm;
 
-	@Input() private getTownWeatherError: string;
-	@Input() private duplicateTownWeatherError: string;
-	@Input() private isLoadingTownWeather: boolean;
-	@Output() private onAddTown: EventEmitter<AddTownFormData> = new EventEmitter<AddTownFormData>();
+	@Input() public getTownWeatherError: string;
+	@Input() public duplicateTownWeatherError: string;
+	@Input() public isLoadingTownWeather: boolean;
+	@Output() public onAddTown: EventEmitter<AddTownFormData> = new EventEmitter<AddTownFormData>();
 
 	ngAfterViewChecked() {
 		this.addTownForm.valueChanges.subscribe(() => this.onFormValueChanged());

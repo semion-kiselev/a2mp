@@ -38,9 +38,9 @@ import { TownWeather } from '../../shared/interfaces/TownWeather';
 	`
 })
 export class TownsItemComponent {
-	@Input() private item: TownWeather;
-	@Output() private onToggleFavorite: EventEmitter<number> = new EventEmitter<number>();
-	@Output() private onDeleteTown: EventEmitter<number> = new EventEmitter<number>();
+	@Input() public item: TownWeather;
+	@Output() public onToggleFavorite: EventEmitter<number> = new EventEmitter<number>();
+	@Output() public onDeleteTown: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
 		private router: Router

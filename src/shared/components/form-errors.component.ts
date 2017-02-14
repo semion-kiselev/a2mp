@@ -19,8 +19,8 @@ interface FormErrors {
 	`
 })	
 export class FormErrorsComponent implements OnInit, OnChanges {
-	@Input() private errors: FormErrors;
-	private errorMessages: string[];
+	@Input() public errors: FormErrors;
+	public errorMessages: string[];
 
 	ngOnInit() {
 		this.errorMessages = this.parseErrors(this.errors);

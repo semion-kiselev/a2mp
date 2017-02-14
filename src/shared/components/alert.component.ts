@@ -11,8 +11,8 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 	`
 })
 export class AlertComponent {
-	@Input() private type: string;
-	@Input() private message: string;
+	@Input() public type: string;
+	@Input() public message: string;
 
 	get rootClasses() {
 		return {

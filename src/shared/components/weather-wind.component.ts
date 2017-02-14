@@ -12,6 +12,6 @@ import { Component, Input } from '@angular/core';
 	`
 })
 export class WeatherWindComponent {
-	@Input() private speed: number;
-	@Input() private deg: number;
+	@Input() public speed: number;
+	@Input() public deg: number;
 }

@@ -72,17 +72,17 @@ import { FetchTowns, AddTown, DeleteTown, ToggleFavorite } from '../actions';
 	`
 })
 export class TownsComponent implements OnInit {
-	private data: TownWeather[] = [];
+	public data: TownWeather[] = [];
 
-	private rowsPerPage: number = 10;
-	private currentPageIndex: number = 0;
+	public rowsPerPage: number = 10;
+	public currentPageIndex: number = 0;
 
-	private getTownsWeatherError: string = '';
-	private getTownWeatherError: string = '';
-	private duplicateTownWeatherError: string= '';
-	private townsOverloadError: boolean = false;
-	private isLoadingTownsWeather: boolean = false;
-	private isLoadingTownWeather: boolean = false;
+	public getTownsWeatherError: string = '';
+	public getTownWeatherError: string = '';
+	public duplicateTownWeatherError: string= '';
+	public townsOverloadError: boolean = false;
+	public isLoadingTownsWeather: boolean = false;
+	public isLoadingTownWeather: boolean = false;
 
 	constructor(private store: Store<State>) {}
 

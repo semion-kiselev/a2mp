@@ -21,7 +21,7 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 	`
 })
 export class HeaderComponent implements OnInit {
-	private widgetIsActivated: boolean = false;
+	public widgetIsActivated: boolean = false;
 
 	constructor(
 		private route: ActivatedRoute,

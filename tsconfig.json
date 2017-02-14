@@ -10,8 +10,14 @@
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true
   },
+
+  "files": [
+    "src/app.module.ts",
+    "src/main.ts",
+    "src/map/map.module.ts"
+  ],
+
   "angularCompilerOptions": {
-    "genDir": "",
     "entryModule": "./src/app.module#AppModule"
   }
 }

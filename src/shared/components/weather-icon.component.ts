@@ -26,5 +26,5 @@ import { Component, Input } from '@angular/core';
 	`
 })
 export class WeatherIconComponent {
-	@Input() private icon: string;
+	@Input() public icon: string;
 }

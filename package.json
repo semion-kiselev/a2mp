@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Angular 2 Mentoring Program",
   "scripts": {
+    "cleanup": "rimraf src/**/*.ngfactory.ts src/**/*.ngstyle.ts src/**/*.ngsummary.json src/**/*.metadata.json src/**/*.js src/**/*.js.map dist",
     "start": "webpack-dev-server --inline --progress --port 8080",
-    "build": "rimraf dist && webpack --config config/webpack.prod.js --progress"
+    "build": "npm run cleanup && \"node_modules/.bin/ngc\" -p tsconfig.json && webpack --config config/webpack.prod.js -p"
   },
   "licenses": [
     {
@@ -33,9 +34,8 @@
     "zone.js": "0.6.26"
   },
   "devDependencies": {
-    "@ngtools/webpack": "^1.2.4",
     "@types/core-js": "^0.9.35",
-    "@types/lodash": "^4.14.43",
+    "@types/lodash": "ts2.0",
     "@types/node": "^6.0.45",
     "angular-router-loader": "^0.5.0",
     "angular2-template-loader": "0.6.0",
@@ -52,7 +52,7 @@
     "rimraf": "2.5.4",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
-    "typescript": "^2.0.10",
+    "typescript": "2.0.10",
     "url-loader": "^0.5.7",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0",

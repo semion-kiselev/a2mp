@@ -46,9 +46,9 @@ import { Geoposition } from '../shared/interfaces/Geoposition';
 	`
 })
 export class CurrentPlaceComponent implements OnInit {
-	private currentPlaceData: TownWeather;
-	private isLoading: boolean = false;
-	private hasError: boolean = false;
+	public currentPlaceData: TownWeather = <TownWeather>{};
+	public isLoading: boolean = false;
+	public hasError: boolean = false;
 
 	constructor(
 		private geoPosition: GeoPositionService,

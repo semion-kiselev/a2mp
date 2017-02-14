@@ -1,13 +1,16 @@
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ngToolsWebpack = require('@ngtools/webpack');
 const commonConfig = require('./webpack.common.js');
 const helpers = require('./helpers');
 const root = helpers.root;
 
 module.exports = webpackMerge(commonConfig, {
   devtool: false,
+
+  entry: {
+    'app': './src/main.aot.ts'
+  },
 
   output: {
     path: root('dist'),
@@ -20,15 +23,12 @@ module.exports = webpackMerge(commonConfig, {
     rules: [
       {
         test: /\.ts$/,
-        loaders: ['@ngtools/webpack', 'angular-router-loader']
+        loaders: ['awesome-typescript-loader', 'angular2-template-loader', 'angular-router-loader?aot=true']
       }
     ]
   },
   
   plugins: [
-    new ngToolsWebpack.AotPlugin({
-      tsConfigPath: './tsconfig.json'
-    }),
     new webpack.optimize.UglifyJsPlugin({
       mangle: {
         keep_fnames: true

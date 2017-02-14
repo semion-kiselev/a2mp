@@ -14,9 +14,9 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
 	`
 })
 export class PaginatorComponent {
-	@Input() private pageQty: number;
-	@Input() private currentPageIndex: number;
-	@Output() private onPageChange: EventEmitter<number> = new EventEmitter<number>();
+	@Input() public pageQty: number;
+	@Input() public currentPageIndex: number;
+	@Output() public onPageChange: EventEmitter<number> = new EventEmitter<number>();
 
 	get pageIndexesAr(): number[] {
 		let ar: number[] = [];

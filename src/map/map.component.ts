@@ -19,8 +19,8 @@ import { GoogleMapsService } from '../core/services/google-maps.service';
 	`
 })
 export class MapComponent implements OnInit {
-	private height: number = 500;
-	private hasError: boolean = false;
+	public height: number = 500;
+	public hasError: boolean = false;
 
 	constructor(
 		private el: ElementRef,
