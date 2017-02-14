@@ -4,12 +4,22 @@ import { Effect, Actions } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Store } from '@ngrx/store';
 import { State } from './reducers';
-import { ToggleFavoriteSuccess } from './actions';
+import {
+	ToggleFavoriteSuccess,
+	AddTownDuplicateFailure,
+	AddTownSuccess,
+	AddTownFailure,
+	FetchTownsSuccess,
+	FetchTownsFailure,
+	DeleteTownSuccess
+} from './actions';
 
 import * as TownWeatherActions from './actions';
 import { OpenWeatherService } from '../core/services/open-weather.service';
 
 import { SavedTown } from '../shared/interfaces/SavedTown';
+import { TownWeather } from '../shared/interfaces/TownWeather';
+import { AddTownFormData } from '../shared/interfaces/AddTownFormData';
 
 @Injectable()
 export class TownWeatherEffects {
@@ -22,62 +32,42 @@ export class TownWeatherEffects {
 	@Effect()
 	fetchTowns$: Observable<Action> = this.actions$
 		.ofType(TownWeatherActions.ActionTypes.FETCH_TOWNS)
-		.switchMap(() => {
+		.switchMap<Action>(() => {
 			const savedTowns: SavedTown[] = this.OWS.getTownsFromStorage();
 
 			if (!savedTowns) {
-				return Observable.of({
-					type: TownWeatherActions.ActionTypes.FETCH_TOWNS_SUCCESS,
-					payload: []
-				})
+				return Observable.of(new FetchTownsSuccess([]));
 			}
 
-			// this.OWS.startTownsWeatherPeriodicUpdate();
+			this.OWS.startTownsWeatherPeriodicUpdate();
 
 			return this.OWS.getTownsWeather(savedTowns)
-				.map(formatedData => ({
-						type: TownWeatherActions.ActionTypes.FETCH_TOWNS_SUCCESS,
-						payload: formatedData
-					}))
+				.map(formatedData => (new FetchTownsSuccess(formatedData)))
 				.catch(error => (
-					Observable.of({
-						type: TownWeatherActions.ActionTypes.FETCH_TOWNS_FAILURE,
-						payload: error
-					})
+					Observable.of(new FetchTownsFailure(error))
 				));
 		});
 
 	@Effect()
 	addTown$: Observable<Action> = this.actions$
 		.ofType(TownWeatherActions.ActionTypes.ADD_TOWN)
-		.switchMap(action => {
+		.switchMap(action => { 
 			return this.OWS.addTown(action.payload)
-					.map(townWeather => {
-						if (this.OWS.isThisTownAlreadyExists(townWeather.id)) {
-							return {
-								type: TownWeatherActions.ActionTypes.ADD_TOWN_DUPLICATE_FAILURE,
-								payload: `This town is already observed. It\'s name ${townWeather.name}`
-							}
-						}
+				.mergeMap<Action>((townWeather: TownWeather) => {
+					if (this.OWS.isThisTownAlreadyExists(townWeather.id)) {
+						return Observable.from([
+							new AddTownDuplicateFailure(`This town is already observed. It\'s name ${townWeather.name}`)
+						]);
+					}
 
-						if (action.payload.markTownAsFavorite) {
-							setTimeout(() => {
-								this.store.dispatch(new ToggleFavoriteSuccess(townWeather.id));
-							}, 0);
-						}
+					if (action.payload.markTownAsFavorite) {
+						return Observable.from([new AddTownSuccess(townWeather), new ToggleFavoriteSuccess(townWeather.id)]);
+					}
 
-						return {
-							type: TownWeatherActions.ActionTypes.ADD_TOWN_SUCCESS,
-							payload: townWeather
-						} 
-					})
-					.catch(error => (
-						Observable.of({
-							type: TownWeatherActions.ActionTypes.ADD_TOWN_FAILURE,
-							payload: error
-						})
-					));
-		});
+					return Observable.from([new AddTownSuccess(townWeather)]);
+				})
+				.catch(error => Observable.of(new AddTownFailure(error.statusText || error)))
+		})
 
 	@Effect()
 	deleteTown$: Observable<Action> = this.actions$
@@ -85,10 +75,7 @@ export class TownWeatherEffects {
 		.switchMap(action => {
 			this.OWS.cancelAndDeferUpdateIfInProgress();
 
-			return Observable.of({
-					type: TownWeatherActions.ActionTypes.DELETE_TOWN_SUCCESS,
-					payload: action.payload
-				})
+			return Observable.of(new DeleteTownSuccess(action.payload))
 		});
 
 	@Effect()
@@ -97,9 +84,6 @@ export class TownWeatherEffects {
 		.switchMap(action => {
 			this.OWS.cancelAndDeferUpdateIfInProgress();
 
-			return Observable.of({
-					type: TownWeatherActions.ActionTypes.TOGGLE_FAVORITE_SUCCESS,
-					payload: action.payload
-				})
+			return Observable.of(new ToggleFavoriteSuccess(action.payload))
 		});
 }
