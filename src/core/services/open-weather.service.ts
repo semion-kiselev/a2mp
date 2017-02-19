@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { Injectable, Inject } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Request, Headers, RequestOptions, URLSearchParams, RequestMethod } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { Subscription } from 'rxjs/Subscription';
@@ -20,11 +20,8 @@ Injectable()
 export class OpenWeatherService {
 	private apiKey: string = openWeatherApiKey;
 
-	private weatherByTownName: string = 'http://api.openweathermap.org/data/2.5/weather?q={{townName}}&units=metric';
-	private weatherByTownsIds: string = 'http://api.openweathermap.org/data/2.5/group?id={{townsIds}}&units=metric';
-	private weatherByTownId: string = 'http://api.openweathermap.org/data/2.5/weather?id={{townId}}&units=metric';
-	private weatherByCoords: string = 
-					'http://api.openweathermap.org/data/2.5/weather?lat={{latitude}}&lon={{longitude}}&units=metric';
+	private weatherUrl = 'http://api.openweathermap.org/data/2.5/weather';
+	private groupUrl = 'http://api.openweathermap.org/data/2.5/group';
 
 	private freshTimeInMs: number = 60*1000;
 	private localStorageAccessKey: string = 'savedTowns';
@@ -45,26 +42,49 @@ export class OpenWeatherService {
 
 	public getTownsWeather(savedTowns: SavedTown[]): Observable<TownWeather[]> {
 		const townsIds: string = _.map(savedTowns, 'id').join(',');
-		const url: string = this.getUrlForTownsWeather(townsIds);
+	
+		let search = new URLSearchParams();
+		search.set('id', townsIds);
+		search.set('units', 'metric');
+		search.set('appid', this.apiKey);
 
-		return this.http.get(url)
+		const headers = new Headers({'Accept-Language': 'ru;q=1, en-gb;q=0.8, en;q=0.7'});
+		const options = new RequestOptions({ search, headers });
+
+		return this.http.request(new Request({
+			method: RequestMethod.Get, 
+			url: this.groupUrl, 
+			headers, 
+			search
+		}))
 			.map(result => result.json())
 			.map(parsedResult => this.formatFetchedTownsWeatherData(parsedResult))
 			.map(formatedData => this.setFavoriteTown(formatedData, savedTowns));
 	}
 
 	public getTownWeatherById(townId: number): Observable<TownWeather> {
-		const url = this.getUrlForTownWeatherById(townId);
+		let search = new URLSearchParams();
+		search.set('id', '' + townId);
+		search.set('units', 'metric');
+		search.set('appid', this.apiKey);
 
-		return this.http.get(url)
+		const options = new RequestOptions({ search });
+
+		return this.http.get(this.weatherUrl, options)
 			.map(result => result.json())
 			.map(parsedResult => this.formatFetchedTownWeatherData(parsedResult));	
 	}
 
 	public getTownWeatherByCoords(latitude: number, longitude: number): Observable<TownWeather> {
-		const url = this.getUrlForTownWeatherByCoords(latitude, longitude);
+		let search = new URLSearchParams();
+		search.set('lat', '' + latitude);
+		search.set('lon', '' + longitude);
+		search.set('units', 'metric');
+		search.set('appid', this.apiKey);
 
-		return this.http.get(url)
+		const options = new RequestOptions({ search });
+
+		return this.http.get(this.weatherUrl, options)
 			.map(result => result.json())
 			.map(parsedResult => this.formatFetchedTownWeatherData(parsedResult));
 	}
@@ -110,30 +130,17 @@ export class OpenWeatherService {
 	public addTown(townData: AddTownFormData): Observable<TownWeather> {
 		this.cancelAndDeferUpdateIfInProgress();
 
-		const url = this.getUrlForTownWeather(townData.townName);
+		let search = new URLSearchParams();
+		search.set('q', townData.townName);
+		search.set('units', 'metric');
+		search.set('appid', this.apiKey);
 
-		return this.http.get(url)
+		const options = new RequestOptions({ search });
+
+		return this.http.get(this.weatherUrl, options)
 			.map(result => result.json())
 			.map(parsedResult => this.formatFetchedTownWeatherData(parsedResult));
 	}
-
-	private getUrlForTownsWeather(townsIds: string): string {
-		return `${this.weatherByTownsIds.replace(/\{\{townsIds\}\}/, townsIds)}&appid=${this.apiKey}`;
-	}
-
-	private getUrlForTownWeather(townName: string): string {
-		return `${this.weatherByTownName.replace(/\{\{townName\}\}/, townName)}&appid=${this.apiKey}`;
-	}
-
-	private getUrlForTownWeatherById(townId: number): string {
-		return `${this.weatherByTownId.replace(/\{\{townId\}\}/, '' + townId)}&appid=${this.apiKey}`;
-	}
-
-	private getUrlForTownWeatherByCoords(latitude: number, longitude: number): string {
-		return `${this.weatherByCoords
-				.replace(/\{\{latitude\}\}/, '' + latitude)
-				.replace(/\{\{longitude}\}/, '' + longitude)}&appid=${this.apiKey}`;
-	}	
 
 	public formatFetchedTownsWeatherData(data: OpenWeatherResponse): TownWeather[] {
 		return data.list.map(this.formatFetchedTownWeatherData);

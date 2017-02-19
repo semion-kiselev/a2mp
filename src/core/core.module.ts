@@ -13,13 +13,14 @@ import { GeoPositionService } from './services/geo-position.service';
 import { GoogleMapsService } from './services/google-maps.service';
 import { OpenWeatherService } from './services/open-weather.service';
 import { LoggerService, loggerFactory } from './services/logger.service';
+import { requestOptionsProvider } from './services/default-request-options.service';
 
 @NgModule({
 	imports: [ 
 		CommonModule,
-		CurrentPlaceModule, 
+		CurrentPlaceModule,
 		TownsModule,
-		AppRoutingModule 
+		AppRoutingModule
 	],
 	declarations: [
 		HeaderComponent,
@@ -36,7 +37,8 @@ import { LoggerService, loggerFactory } from './services/logger.service';
 		GoogleMapsService,
 		OpenWeatherService,
 		CustomPreloadingStrategy,
-		{ provide: LoggerService, useFactory: loggerFactory }
+		{ provide: LoggerService, useFactory: loggerFactory },
+		requestOptionsProvider
 	]
 })
 export class CoreModule {};
