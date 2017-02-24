@@ -11,7 +11,7 @@ interface State {
 	isLoadingTownWeather: boolean;
 };
 
-const initialState: State = {
+export const initialState: State = {
 	data: [],
 	getTownsWeatherError: '',
 	getTownWeatherError: '',
@@ -91,9 +91,6 @@ export function townWeatherReducer(state = initialState, action: Action): State 
 			return Object.assign({}, state, {
 				data: state.data.filter(item => item.id !== action.payload)
 			});
-
-
-
 
 		default: {
 	      	return state;

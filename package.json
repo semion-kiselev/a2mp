@@ -5,7 +5,8 @@
   "scripts": {
     "cleanup": "rimraf src/**/*.ngfactory.ts src/**/*.ngstyle.ts src/**/*.ngsummary.json src/**/*.metadata.json src/**/*.js src/**/*.js.map dist",
     "start": "webpack-dev-server --inline --progress --port 8080",
-    "build": "npm run cleanup && \"node_modules/.bin/ngc\" -p tsconfig.json && webpack --config config/webpack.prod.js -p"
+    "build": "npm run cleanup && \"node_modules/.bin/ngc\" -p tsconfig.json && webpack --config config/webpack.prod.js -p",
+    "test": "karma start"
   },
   "licenses": [
     {
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.35",
+    "@types/jasmine": "^2.5.41",
     "@types/lodash": "ts2.0",
     "@types/node": "^6.0.45",
     "angular-router-loader": "^0.5.0",
@@ -46,6 +48,12 @@
     "file-loader": "^0.8.5",
     "html-loader": "^0.4.3",
     "html-webpack-plugin": "^2.15.0",
+    "jasmine": "^2.5.3",
+    "karma": "^1.5.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^2.0.2",
     "node-sass": "^3.13.0",
     "null-loader": "^0.1.1",
     "raw-loader": "^0.5.1",
