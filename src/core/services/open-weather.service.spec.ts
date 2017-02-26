@@ -10,53 +10,9 @@ import { StoreModule } from '@ngrx/store';
 import { townWeatherReducer } from '../../towns/reducers';
 import { MockBackend } from '@angular/http/testing';
 import { OpenWeatherService } from './open-weather.service';
-
-const mockedResponse = {
-	cod: '',
-	count: 1,
-	list: [
-		{
-			clouds: {
-				all: 0 
-			},
-			coord: {
-				lat: 0,
-				lon: 0
-			},
-			dt: 0,
-			id: 1,
-			main: {
-				humidity: 0,
-				pressure: 0,
-				temp: 0,
-				temp_max: 0,
-				temp_min: 0
-			},
-			name: '',
-			sys: {
-				country: '',
-				sunrise: 0,
-				sunset: 0
-			},
-			weather: [
-				{
-					description: '',
-					icon: '',
-					id: 1,
-					main: ''
-				}
-			],
-			wind: {
-				deg: 0,
-				gust: 0,
-				speed: 0,
-				var_beg: 0,
-				var_end: 0
-			}
-		}
-	],
-	message: 'string'
-};
+import { 
+	mockedOpenWeatherServiceResponse as mockedResponse
+} from '../../shared/mock-data/mockedOpenWeatherServiceResponse';
 
 const sunriseDate = new Date(0);
 const sunsetDate = new Date(0);
@@ -77,9 +33,11 @@ const expectedTownWeatherItem = {
 	sunset: getHours(sunsetDate) + ':' + getMinutes(sunsetDate)
 };
 
+let OWS: OpenWeatherService;
+let mockBackend: MockBackend;
+
 describe('OpenWeatherService', () => {
 	beforeEach(() => {
-
     	TestBed.configureTestingModule({
 			imports: [HttpModule, StoreModule.provideStore(townWeatherReducer)],
 			providers: [
@@ -89,60 +47,50 @@ describe('OpenWeatherService', () => {
     	});
   	});
 
-  	describe('getTownsWeather()', () => {
-  		it('should return an Observable<TownWeather[]>', inject([OpenWeatherService, XHRBackend], (OWS, mockBackend) => {
-			mockBackend.connections.subscribe((connection) => {
-				connection.mockRespond(new Response(new ResponseOptions({
-        			body: JSON.stringify(mockedResponse)
-      			})));
-			});
+  	beforeEach(inject([OpenWeatherService, XHRBackend], (service, backend) => {
+  		OWS = service;
+  		mockBackend = backend;
+  	}));
 
-			OWS.getTownsWeather([]).subscribe((result) => {
-				expect(result.length).toBe(1);
-				expect(result[0]).toEqual(expectedTownWeatherItem);
-			});
-		}));
-  	});
+  	// getTownsWeather()
+  	it('should return an Observable<TownWeather[]>', () => {
+		mockBackend.connections.subscribe((connection) => {
+			connection.mockRespond(new Response(new ResponseOptions({
+    			body: JSON.stringify(mockedResponse)
+  			})));
+		});
 
-  	describe('getTownWeatherById()', () => {
-  		it('should return an Observable<TownWeather>', inject([OpenWeatherService, XHRBackend], (OWS, mockBackend) => {
-			mockBackend.connections.subscribe((connection) => {
+		OWS.getTownsWeather([]).subscribe((result) => {
+			expect(result.length).toBe(1);
+			expect(result[0]).toEqual(expectedTownWeatherItem);
+		});
+	});
+
+  	describe('getTownWeatherById(), getTownWeatherByCoords(), addTown()', () => {
+  		beforeEach(() => {
+	    	mockBackend.connections.subscribe((connection) => {
 				connection.mockRespond(new Response(new ResponseOptions({
         			body: JSON.stringify(mockedResponse.list[0])
       			})));
 			});
+	  	});
 
+  		it('should return an Observable<TownWeather>', () => {			
 			OWS.getTownWeatherById(1).subscribe((result) => {
 				expect(result).toEqual(expectedTownWeatherItem);
 			});
-		}));
-  	});
+		});
 
-  	describe('getTownWeatherByCoords()', () => {
-  		it('should return an Observable<TownWeather>', inject([OpenWeatherService, XHRBackend], (OWS, mockBackend) => {
-			mockBackend.connections.subscribe((connection) => {
-				connection.mockRespond(new Response(new ResponseOptions({
-        			body: JSON.stringify(mockedResponse.list[0])
-      			})));
-			});
-
+		it('should return an Observable<TownWeather>', () => {
 			OWS.getTownWeatherByCoords(0, 0).subscribe((result) => {
 				expect(result).toEqual(expectedTownWeatherItem);
 			});
-		}));
-  	});
+		});
 
-  	describe('addTown()', () => {
-  		it('should return an Observable<TownWeather>', inject([OpenWeatherService, XHRBackend], (OWS, mockBackend) => {
-			mockBackend.connections.subscribe((connection) => {
-				connection.mockRespond(new Response(new ResponseOptions({
-        			body: JSON.stringify(mockedResponse.list[0])
-      			})));
-			});
-
-			OWS.addTown({townName: ''}).subscribe((result) => {
+		it('should return an Observable<TownWeather>', () => {
+			OWS.addTown({ townName: '', markTownAsFavorite: false }).subscribe((result) => {
 				expect(result).toEqual(expectedTownWeatherItem);
 			});
-		}));
+		});
   	});
 });
