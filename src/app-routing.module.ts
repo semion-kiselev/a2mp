@@ -6,7 +6,7 @@ import { PageNotFoundComponent } from './shared/components/page-not-found.compon
 import { CurrentPlaceComponent } from './current-place/current-place.component';
 
 const appRoutes: Routes = [
-	{ path: 'map', loadChildren: './map/map.module#MapModule', data: {preload: true} },
+	{ path: 'map', loadChildren: './+map/map.module#MapModule', data: {preload: true} },
 	{ path: 'current-place', component: CurrentPlaceComponent, outlet: 'current-place'},
 	{ path: '', redirectTo: '/towns', pathMatch: 'full' },
 	{ path: '**', component: PageNotFoundComponent }

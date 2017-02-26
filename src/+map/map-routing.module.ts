@@ -3,13 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { MapComponent } from './map.component';
 
-const townsRoutes: Routes = [
+const mapRoutes: Routes = [
 	{ path: '', component: MapComponent }
 ];
 
 @NgModule({
 	imports: [
-		RouterModule.forChild(townsRoutes)
+		RouterModule.forChild(mapRoutes)
 	],
 	exports: [
 		RouterModule
